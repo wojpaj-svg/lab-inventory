@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Characterization Lab Inventory</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #ffffff;
+      color: #222;
+      text-align: center;
+    }
+
+    header {
+      background: #0b8a2e; /* zielony */
+      color: #fff;
+      padding: 18px 10px;
+      font-size: 1.4rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    main {
+      max-width: 500px;
+      margin: 30px auto 40px;
+      padding: 0 16px 40px;
+    }
+
+    .search-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 2px solid #0b8a2e;
+      border-radius: 10px;
+      padding: 10px 14px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    }
+
+    #search {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      padding: 6px 4px;
+    }
+
+    .results {
+      margin-top: 24px;
+      text-align: left;
+    }
+
+    .result-item {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .item-name {
+      font-weight: 700;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 6px;
+text-transform: capitalize;
+      /* jeśli kiedyś zmienisz dane na normalny zapis,
+         możesz tu dodać: text-transform: capitalize; */
+    }
+
+    .item-meta {
+      display: flex;
+      justify-content: flex-end;  /* LEWO / PRAWO */
+      align-items: center;
+      font-size: 0.9rem;
+      color: #555;
+gap: 6px;
+    }
+
+    .item-location {
+      font-weight: 700;
+      color: #0b8a2e; /* zielony */
+    }
+
+    .no-results {
+      margin-top: 20px;
+      color: #888;
+      font-size: 0.95rem;
+    }
+
+    footer {
+      margin-top: 30px;
+      font-size: 0.8rem;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    CHARACTERIZATION LAB INVENTORY 
+  </header>
+
+  <main>
+    <div class="search-wrapper">
+      <input
+        id="search"
+        type="text"
+        placeholder="Search item…"
+        autocomplete="off"
+      />
+    </div>
+
+    <div id="results" class="results"></div>
+
+    <footer>• Developed with Viviana • Designed by WP •</footer>
+  </main>
+
+  <script>
+    /* ===== DANE ===== */
+    const data = [
+      { name: "PLASTIC BOXES 13 L ", location: "GCLS7" },
+      { name: "PLASTIC LIDS SMALL", location: "GCLS7" },
+      { name: "PLASTIC LIDS MEDIUM ", location: "GCLS7" },
+      { name: "PLASTIC LIDS LARGE ", location: "GCLS7" },
+      { name: "GLASS REAGENT BOTTLE WITH STOPPER ", location: "GCLS8" },
+      { name: "GLASS BOTTLE BE LIFE", location: "GCLS8" },
+      { name: "GLASS BOTTLES 500 ML ", location: "GCLS8" },
+      { name: "FINNPIPETTE IN BOX", location: "GCLS9" },
+      { name: "MULTIPIPETTE M4 IN BOX", location: "GCLS9" },
+      { name: "BOX COMBITIPS ADVANCED ", location: "GCLS9" },
+      { name: "MEDICAL FACE MASK 50PCS", location: "GCLS9" },
+      { name: "PIPETTE TIPS 0.5-10ML", location: "GCLS9" },
+      { name: "VISCOTIP 10 ML ", location: "GCLS9" },
+      { name: "PLASTIC BOX 18 L", location: "GCLS9" },
+      { name: "PLASTIC BOX 4.6L WITH LIDS ", location: "GCLS9" },
+      { name: "BOX PIPETTE 0.1-2.5 µL", location: "GCLS9" },
+      { name: "BOX PIPETTE 2-20  µl", location: "GCLS9" },
+      { name: "BOX PIPETTE 20-200  µl", location: "GCLS9" },
+      { name: "BOX PIPETTE 100-1000  µl", location: "GCLS9" },
+      { name: "BOX PIPETTE 0.5-5 ML", location: "GCLS9" },
+      { name: "BOX PIPETTE 1-10 Ml", location: "GCLS9" },
+      { name: "BOX MULTIPIPETTE M4 STARTER KIT", location: "GCLS9" },
+      { name: "WATER QUALITY TESTER", location: "IRD8" },
+      { name: "PH ELECTRODE BOX + FILLING SOLUTION ", location: "IRD8" },
+      { name: "PH TEST STRIPS pH 0.0-1.8", location: "IRD8" },
+      { name: "PH TEST STRIPS pH 0.0-6.0", location: "IRD8" },
+      { name: "PH TEST STRIPS pH 3.8-5.5", location: "IRD8" },
+      { name: "PH TEST STRIPS pH 6.0-8.1", location: "IRD8" },
+      { name: "PH TEST STRIPS pH 7.0-14.0", location: "IRD8" }
+    ];
+
+    const searchInput = document.getElementById("search");
+    const resultsDiv  = document.getElementById("results");
+
+    function normalize(text) {
+      return text ? text.toString().toLowerCase().trim() : "";
+    }
+
+    function search() {
+      const q = normalize(searchInput.value);
+      resultsDiv.innerHTML = "";
+
+      if (!q) {
+        resultsDiv.innerHTML =
+          '<div class="no-results">Start typing to search…</div>';
+        return;
+      }
+
+      const matches = data.filter(item =>
+        normalize(item.name).includes(q) ||
+        normalize(item.location).includes(q)
+      );
+
+      if (matches.length === 0) {
+        resultsDiv.innerHTML =
+          '<div class="no-results">No items found for this query.</div>';
+        return;
+      }
+
+      matches.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "result-item";
+        div.innerHTML = `
+          <div class="item-name">${item.name}</div>
+          <div class="item-meta">
+  <span><strong>Location:</strong> <span class="item-location">${item.location}</span></span>
+</div>
+
+        `;
+        resultsDiv.appendChild(div);
+      });
+    }
+
+    // live search
+    searchInput.addEventListener("input", search);
+
+    // tekst startowy
+    resultsDiv.innerHTML =
+      '<div class="no-results">Start typing to search…</div>';
+  </script>
+</body>
+</html>
