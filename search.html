@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title> Characterization Lab Inventory Search</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: #ffffff;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+/* Top green bar */
+.header {
+    background: #0b8a2e;
+    color: white;
+    padding: 20px;
+    font-size: 26px;
+    font-weight: 600;
+}
+
+/* Logo */
+.logo {
+    margin-top: 50px;
+}
+
+/* Search box container */
+.search-container {
+    position: relative;
+    width: 80%;
+    max-width: 500px;
+    margin: 60px auto 20px auto;
+}
+
+/* Search box */
+#search {
+    width: 100%;
+    padding: 14px 40px 14px 14px;
+    font-size: 18px;
+    border: 2px solid #0b8a2e;
+    border-radius: 8px;
+    outline: none;
+}
+
+/* Magnifying glass icon */
+.search-icon {
+    position: absolute;
+    right: 15px;
+    top: 12px;
+    font-size: 20px;
+    color: #0b8a2e;
+}
+
+/* Results */
+#results {
+    margin-top: 20px;
+    text-align: left;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Each result box */
+.result-item {
+    background: white;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border-left: 5px solid #0b8a2e;
+    font-size: 18px;
+}
+
+/* Footer */
+.footer {
+    margin-top: 40px;
+    padding: 15px;
+    font-size: 14px;
+    color: #555;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Header -->
+<div class="header">CHARACTERIZATION LAB INVENTORY SEARCH</div>
+
+<!-- Logo (replace logo.png with your file name if needed) -->
+
+
+<!-- Search bar -->
+<div class="search-container">
+    <input type="text" id="search" placeholder="Search item...">
+    <div class="search-icon">🔍</div>
+</div>
+
+<!-- Results -->
+<div id="results"></div>
+
+<script>
+/* TU BĘDĄ DANE */
+const data = [
+  { name: "PLASTIC BOXES 13 L ", location: "GCLS7" },
+{ name: "PLASTIC LIDS SMALL", location: "GCLS7" },
+{ name: "PLASTIC LIDS MEDIUM ", location: "GCLS7" },
+{ name: "PLASTIC LIDS LARGE ", location: "GCLS7" },
+{ name: "GLASS REAGENT BOTTLE WITH STOPPER ", location: "GCLS8" },
+{ name: "GLASS BOTTLE BE LIFE", location: "GCLS8" },
+{ name: "GLASS BOTTLES 500 ML ", location: "GCLS8" },
+{ name: "FINNPIPETTE IN BOX", location: "GCLS9" },
+{ name: "MULTIPIPETTE M4 IN BOX", location: "GCLS9" },
+{ name: "BOX COMBITIPS ADVANCED ", location: "GCLS9" },
+{ name: "MEDICAL FACE MASK 50PCS", location: "GCLS9" },
+{ name: "PIPETTE TIPS 0.5-10ML", location: "GCLS9" },
+{ name: "VISCOTIP 10 ML ", location: "GCLS9" },
+{ name: "PLASTIC BOX 18 L", location: "GCLS9" },
+{ name: "PLASTIC BOX 4.6L WITH LIDS ", location: "GCLS9" },
+{ name: "BOX PIPETTE 0.1-2.5 µL", location: "GCLS9" },
+{ name: "BOX PIPETTE 2-20  µl", location: "GCLS9" },
+{ name: "BOX PIPETTE 20-200  µl", location: "GCLS9" },
+{ name: "BOX PIPETTE 100-1000  µl", location: "GCLS9" },
+{ name: "BOX PIPETTE 0.5-5 ML", location: "GCLS9" },
+{ name: "BOX PIPETTE 1-10 Ml", location: "GCLS9" },
+{ name: "BOX MULTIPIPETTE M4 STARTER KIT", location: "GCLS9" },
+{ name: "WATER QUALITY TESTER", location: "IRD8" },
+{ name: "PH ELECTRODE BOX + FILLING SOLUTION ", location: "IRD8" },
+{ name: "PH TEST STRIPS pH 0.0-1.8", location: "IRD8" },
+{ name: "PH TEST STRIPS pH 0.0-6.0", location: "IRD8" },
+{ name: "PH TEST STRIPS pH 3.8-5.5", location: "IRD8" },
+{ name: "PH TEST STRIPS pH 6.0-8.1", location: "IRD8" },
+{ name: "PH TEST STRIPS pH 7.0-14.0", location: "IRD8" },
+];
+
+const searchInput = document.getElementById('search');
+const resultsDiv = document.getElementById('results');
+
+searchInput.addEventListener('input', function() {
+    const query = this.value.toLowerCase();
+    resultsDiv.innerHTML = "";
+    if (query.length === 0) return;
+
+    const filtered = data.filter(item =>
+        item.name.toLowerCase().includes(query) ||
+        item.location.toLowerCase().includes(query)
+    );
+
+    if (filtered.length === 0) {
+        resultsDiv.innerHTML = "<div>No matches found</div>";
+        return;
+    }
+
+    filtered.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'result-item';
+        div.textContent = item.name + " → " + item.location;
+        resultsDiv.appendChild(div);
+    });
+});
+</script>
+
+<!-- Footer -->
+<div class="footer">Designed by WP</div>
+
+</body>
+</html>
