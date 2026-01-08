@@ -96,6 +96,30 @@ gap: 6px;
       font-size: 0.8rem;
       color: #777;
     }
+    .chips{
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+.chip{
+  border: 1px solid #0b8a2e;
+  background: #fff;
+  color: #0b8a2e;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.chip.active{
+  background: #0b8a2e;
+  color: #fff;
+}
+
   </style>
 </head>
 <body>
@@ -113,7 +137,8 @@ gap: 6px;
       />
     </div>
 
-    <div id="results" class="results"></div>
+    <div id="chips" class="chips"></div>
+<div id="results" class="results"></div>
 
     <footer>• Developed with Viviana • Designed by WP •</footer>
   </main>
@@ -154,31 +179,91 @@ gap: 6px;
 
     const searchInput = document.getElementById("search");
     const resultsDiv  = document.getElementById("results");
+    const chipsDiv = document.getElementById("chips");
+let activePrefix = ""; // np. "GCLS", "IRD", "ILC" (puste = ALL)
+
 
     function normalize(text) {
       return text ? text.toString().toLowerCase().trim() : "";
     }
+    function getPrefix(locationCode) {
+  // np. "GCLS7" -> "GCLS", "IRD12" -> "IRD", "ILC2S1" -> "ILC"
+  const loc = normalize(locationCode).toUpperCase();
+  const m = loc.match(/^[A-Z]+/);
+  return m ? m[0] : "";
+}
+function renderChips(matches) {
+  chipsDiv.innerHTML = "";
+
+  if (!matches || matches.length === 0) return;
+
+  // zlicz prefiksy
+  const counts = {};
+  matches.forEach(item => {
+    const p = getPrefix(item.location);
+    if (!p) return;
+    counts[p] = (counts[p] || 0) + 1;
+  });
+
+  // zrób listę posortowaną malejąco po liczbie
+  const entries = Object.entries(counts).sort((a,b) => b[1] - a[1]);
+
+  // ALL chip
+  const allChip = document.createElement("div");
+  allChip.className = "chip" + (activePrefix === "" ? " active" : "");
+  allChip.textContent = "All";
+  allChip.addEventListener("click", () => {
+    activePrefix = "";
+    search(); // przerysuj
+  });
+  chipsDiv.appendChild(allChip);
+
+  // prefix chips
+  entries.forEach(([p, n]) => {
+    const chip = document.createElement("div");
+    chip.className = "chip" + (activePrefix === p ? " active" : "");
+    chip.textContent = `${p} (${n})`;
+    chip.addEventListener("click", () => {
+      activePrefix = p;
+      search();
+    });
+    chipsDiv.appendChild(chip);
+  });
+}
+
 
     function search() {
       const q = normalize(searchInput.value);
       resultsDiv.innerHTML = "";
 
-      if (!q) {
-        resultsDiv.innerHTML =
-          '<div class="no-results">Start typing to search…</div>';
-        return;
-      }
+     if (!q) {
+  activePrefix = ""; // reset
+  chipsDiv.innerHTML = "";
+  resultsDiv.innerHTML =
+    '<div class="no-results">Start typing to search…</div>';
+  return;
+}
 
-      const matches = data.filter(item =>
-        normalize(item.name).includes(q) ||
-        normalize(item.location).includes(q)
-      );
 
-      if (matches.length === 0) {
-        resultsDiv.innerHTML =
-          '<div class="no-results">No items found for this query.</div>';
-        return;
-      }
+      let matches = data.filter(item =>
+  normalize(item.name).includes(q) ||
+  normalize(item.location).includes(q)
+);
+
+// jeśli wybrany chip (prefiks), przefiltruj
+if (activePrefix) {
+  matches = matches.filter(item => getPrefix(item.location) === activePrefix);
+}
+
+
+     if (matches.length === 0) {
+  chipsDiv.innerHTML = "";
+  resultsDiv.innerHTML =
+    '<div class="no-results">No items found for this query.</div>';
+  return;
+}
+renderChips(matches);
+
 
       matches.forEach(item => {
         const div = document.createElement("div");
@@ -203,3 +288,4 @@ gap: 6px;
   </script>
 </body>
 </html>
+
