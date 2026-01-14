@@ -141,6 +141,68 @@ gap: 6px;
 .location-items{
   padding-left: 6px;
 }
+.location-topbar{
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 10px 0 6px 0;
+  padding-bottom: 6px;
+  border-bottom: 2px solid #0b8a2e;
+}
+
+.location-code{
+  font-weight: 900;
+  color: #0b8a2e;
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+}
+
+.location-actions{
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn{
+  border: 1px solid #0b8a2e;
+  background: #fff;
+  color: #0b8a2e;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.btn:active{ transform: translateY(1px); }
+
+details.location-details{
+  margin-top: 8px;
+}
+
+details.location-details summary{
+  cursor: pointer;
+  user-select: none;
+  color: #0b8a2e;
+  font-weight: 700;
+  list-style: none;
+}
+
+details.location-details summary::-webkit-details-marker{
+  display: none;
+}
+
+.details-grid{
+  margin-top: 10px;
+  display: grid;
+  gap: 10px;
+}
+
+.details-caption{
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 4px;
+}
 
   </style>
 </head>
@@ -253,6 +315,21 @@ function renderChips(matches) {
   });
 }
 
+    function getMapForLocation(loc){
+  const prefix = getPrefix(loc); // masz już tę funkcję
+  const maps = {
+    "GCLS": "assets/maps/GCLS.jpg",
+    "IRD": "assets/maps/IRD.jpg",
+    "ILC": "assets/maps/ILC.jpg",
+    "MLD": "assets/maps/MLD.jpg",
+    "SLC": "assets/maps/SLC.jpg",
+    "SLUC": "assets/maps/SLUC.jpg",
+    "HHC": "assets/maps/HHC.jpg",
+    "HHD": "assets/maps/HHD.jpg"
+  };
+  return maps[prefix] || "";
+}
+
 
     function search() {
       const q = normalize(searchInput.value);
@@ -300,24 +377,39 @@ Object.keys(groups).sort().forEach(loc => {
   const groupDiv = document.createElement("div");
   groupDiv.className = "location-group";
 
-  // nagłówek lokacji
-  const header = document.createElement("div");
-  header.className = "location-header";
-  header.textContent = loc;
-  groupDiv.appendChild(header);
+ // TOPBAR: po lewej label, po prawej duży kod + Copy
+const topbar = document.createElement("div");
+topbar.className = "location-topbar";
 
-  // zdjęcie lokacji (automatycznie po kodzie)
-  const imgPath = `assets/locations/${loc}.jpg`;
-  const img = document.createElement("img");
-  img.className = "location-photo";
-  img.src = imgPath;
-  img.alt = loc;
-  img.loading = "lazy";
+const left = document.createElement("div");
+left.innerHTML = `<span style="font-weight:700;color:#555;">Location</span>`;
 
-  // jeśli obrazka nie ma → ukryj (żeby nie było „broken image”)
-  img.onerror = () => { img.remove(); };
+const right = document.createElement("div");
+right.className = "location-actions";
+right.innerHTML = `
+  <span class="location-code">${loc}</span>
+  <button class="btn" type="button">Copy</button>
+`;
 
-  groupDiv.appendChild(img);
+topbar.appendChild(left);
+topbar.appendChild(right);
+groupDiv.appendChild(topbar);
+
+// Copy action
+right.querySelector("button").addEventListener("click", async () => {
+  try{
+    await navigator.clipboard.writeText(loc);
+  }catch(e){
+    // fallback (stare przeglądarki)
+    const t = document.createElement("textarea");
+    t.value = loc;
+    document.body.appendChild(t);
+    t.select();
+    document.execCommand("copy");
+    t.remove();
+  }
+});
+
 
   // lista itemów w lokacji
   const itemsDiv = document.createElement("div");
@@ -329,6 +421,44 @@ Object.keys(groups).sort().forEach(loc => {
     itemDiv.innerHTML = `<div class="item-name">${item.name}</div>`;
     itemsDiv.appendChild(itemDiv);
   });
+
+  // DETAILS (zdjęcie dopiero po kliknięciu)
+const details = document.createElement("details");
+details.className = "location-details";
+
+const summary = document.createElement("summary");
+summary.textContent = "DETAILS";
+details.appendChild(summary);
+
+const detailsGrid = document.createElement("div");
+detailsGrid.className = "details-grid";
+
+// zdjęcie szuflady/lokacji
+const imgPath = `assets/locations/${loc}.jpg`;
+const img = document.createElement("img");
+img.className = "location-photo";
+img.src = imgPath;
+img.alt = loc;
+img.loading = "lazy";
+img.onerror = () => { img.remove(); };
+
+detailsGrid.appendChild(img);
+
+// (opcjonalnie) plan labu / mapa strefy
+const mapPath = getMapForLocation(loc); // funkcja niżej
+if (mapPath) {
+  const mapImg = document.createElement("img");
+  mapImg.className = "location-photo";
+  mapImg.src = mapPath;
+  mapImg.alt = `Map for ${loc}`;
+  mapImg.loading = "lazy";
+  mapImg.onerror = () => { mapImg.remove(); };
+  detailsGrid.appendChild(mapImg);
+}
+
+details.appendChild(detailsGrid);
+groupDiv.appendChild(details);
+
 
   groupDiv.appendChild(itemsDiv);
   resultsDiv.appendChild(groupDiv);
@@ -345,6 +475,7 @@ Object.keys(groups).sort().forEach(loc => {
   </script>
 </body>
 </html>
+
 
 
 
