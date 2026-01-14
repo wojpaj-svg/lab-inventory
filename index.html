@@ -227,49 +227,58 @@ details.location-details summary::-webkit-details-marker{
   margin-top: 4px;
 }
 
+/* ===== LEGEND (clean UI) ===== */
 .legend{
-  margin: 6px 0 10px;
-  text-align: left;
-  border: 1px solid #e6e6e6;
-  border-radius: 10px;
-  padding: 8px 10px;
+  margin: 8px 0 10px;
+  padding: 10px 12px;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
   background: #fff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .legend-title{
   font-size: 0.75rem;
-  font-weight: 500;
-  font-style: italic;
-  letter-spacing: 0.04em;
-  color: #666;
-  margin-bottom: 4px;
+  color: #777;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  margin: 0 0 8px;
+  font-weight: 600;
 }
-
 
 .legend-grid{
   display: grid;
-  grid-template-columns: 1fr; /* mobile default */
-  gap: 6px;
-  font-size: 0.85rem;
-  line-height: 1.3;
-  color: #444;
+  grid-template-columns: 1fr 1fr; /* 2 kolumny na telefonie i desktopie */
+  gap: 8px 14px;
+}
+
+.legend-item{
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .legend-code{
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-width: 34px;
-  font-weight: 900;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(11,138,46,0.35);
+  background: rgba(11,138,46,0.08);
   color: #0b8a2e;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
 }
 
-/* na trochę szerszych ekranach zrób 2 kolumny */
-@media (min-width: 520px){
-  .legend-grid{
-    grid-template-columns: 1fr 1fr;
-  }
+.legend-text{
+  color: #333;
+  font-size: 0.9rem;
+  line-height: 1.2;
 }
+
 
 
 
@@ -284,18 +293,51 @@ details.location-details summary::-webkit-details-marker{
  <main>
 
   <div class="legend">
-    <div class="legend-title">Legend</div>
-    <div class="legend-grid">
-      <div><span class="legend-code">GC</span> – glass cabinet</div>
-      <div><span class="legend-code">S</span> – shelf</div>
-      <div><span class="legend-code">C</span> – cabinet</div>
-      <div><span class="legend-code">IR</span> – island right side</div>
-      <div><span class="legend-code">IL</span> – island left side</div>
-      <div><span class="legend-code">ML</span> – main lab</div>
-      <div><span class="legend-code">SL</span> – small lab</div>
-      <div><span class="legend-code">HH</span> – human health lab</div>
+  <div class="legend-title">Legend</div>
+
+  <div class="legend-grid">
+    <div class="legend-item">
+      <span class="legend-code">GC</span>
+      <span class="legend-text">glass cabinet</span>
+    </div>
+
+    <div class="legend-item">
+      <span class="legend-code">S</span>
+      <span class="legend-text">shelf</span>
+    </div>
+
+    <div class="legend-item">
+      <span class="legend-code">C</span>
+      <span class="legend-text">cabinet</span>
+    </div>
+
+    <div class="legend-item">
+      <span class="legend-code">IR</span>
+      <span class="legend-text">island right side</span>
+    </div>
+
+    <div class="legend-item">
+      <span class="legend-code">IL</span>
+      <span class="legend-text">island left side</span>
+    </div>
+
+    <div class="legend-item">
+      <span class="legend-code">ML</span>
+      <span class="legend-text">main lab</span>
+    </div>
+
+    <div class="legend-item">
+      <span class="legend-code">SL</span>
+      <span class="legend-text">small lab</span>
+    </div>
+
+    <div class="legend-item">
+      <span class="legend-code">HH</span>
+      <span class="legend-text">human health lab</span>
     </div>
   </div>
+</div>
+
 
   <div class="search-wrapper">
     <input
@@ -1363,6 +1405,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
