@@ -125,7 +125,30 @@ gap: 6px;
   border: 1px solid #eee;
   margin: 8px 0 12px 0;
 }
-.location-group{
+.map-thumb{
+  max-height: 220px;   /* <- kontroluje "jak mała" jest mapa */
+  object-fit: contain;
+  background: #fafafa;
+}
+
+/* drugi details tylko dla mapy */
+details.map-details{
+  margin-top: 6px;
+}
+
+details.map-details summary{
+  cursor: pointer;
+  user-select: none;
+  color: #0b8a2e;
+  font-weight: 700;
+  list-style: none;
+}
+
+details.map-details summary::-webkit-details-marker{
+  display: none;
+}
+
+  .location-group{
   margin-bottom: 18px;
 }
 
@@ -435,16 +458,27 @@ detailsGrid.appendChild(cap1);
 
 
 // (opcjonalnie) plan labu / mapa strefy
-const mapPath = getMapForLocation(loc); // funkcja niżej
+// (opcjonalnie) plan labu / mapa strefy - pokazuj dopiero po kliknięciu
+const mapPath = getMapForLocation(loc);
 if (mapPath) {
+  const mapDetails = document.createElement("details");
+  mapDetails.className = "map-details";
+
+  const mapSummary = document.createElement("summary");
+  mapSummary.textContent = "Show lab map";
+  mapDetails.appendChild(mapSummary);
+
   const mapImg = document.createElement("img");
-  mapImg.className = "location-photo";
+  mapImg.className = "location-photo map-thumb"; // <- mniejsze
   mapImg.src = mapPath;
   mapImg.alt = `Map for ${loc}`;
   mapImg.loading = "lazy";
-  mapImg.onerror = () => { mapImg.remove(); };
-  detailsGrid.appendChild(mapImg);
+  mapImg.onerror = () => { mapDetails.remove(); };
+
+  mapDetails.appendChild(mapImg);
+  detailsGrid.appendChild(mapDetails);
 }
+
 details.appendChild(detailsGrid);
 groupDiv.appendChild(itemsDiv);
 groupDiv.appendChild(details);
@@ -463,6 +497,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
