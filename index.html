@@ -1071,6 +1071,13 @@ let activePrefix = ""; // np. "GCLS", "IRD", "ILC" (puste = ALL)
   const m = loc.match(/^[A-Z]+/);
   return m ? m[0] : "";
 }
+    function cleanLoc(code){
+  return (code || "")
+    .toString()
+    .toUpperCase()
+    .replace(/\s+/g, ""); // usuwa wszystkie spacje (także w środku)
+}
+
 
 function renderChips(matches) {
   chipsDiv.innerHTML = "";
@@ -1163,7 +1170,7 @@ renderChips(matches);
    // ===== GROUP + PHOTO PER LOCATION =====
 const groups = {};
 matches.forEach(item => {
-  const loc = (item.location || "UNKNOWN").toString().trim();
+  const loc = cleanLoc(item.location) || "UNKNOWN";
   if (!groups[loc]) groups[loc] = [];
   groups[loc].push(item);
 });
@@ -1215,13 +1222,24 @@ const detailsGrid = document.createElement("div");
 detailsGrid.className = "details-grid";
 
 // zdjęcie szuflady/lokacji
-const imgPath = `assets/locations/${loc}.jpg`;
 const img = document.createElement("img");
 img.className = "location-photo";
-img.src = imgPath;
 img.alt = loc;
 img.loading = "lazy";
-img.onerror = () => { img.remove(); };
+
+const primary = `assets/locations/${loc}.jpg`;
+const fallback = `assets/locations/${getPrefix(loc)}.jpg`;
+
+img.src = primary;
+img.onerror = () => {
+  // jeśli nie ma np. GCLS5.jpg, spróbuj GCLS.jpg
+  if (img.src.endsWith(`${loc}.jpg`)) {
+    img.src = fallback;
+  } else {
+    img.remove();
+  }
+};
+
 
 detailsGrid.appendChild(img);
   const cap1 = document.createElement("div");
@@ -1232,7 +1250,8 @@ detailsGrid.appendChild(cap1);
 
 // (opcjonalnie) plan labu / mapa strefy
 // (opcjonalnie) plan labu / mapa strefy - pokazuj dopiero po kliknięciu
-const mapPath = getMapForLocation(loc);
+const mapPath = getMapForLocation(cleanLoc(loc));
+
 if (mapPath) {
   const mapDetails = document.createElement("details");
   mapDetails.className = "map-details";
@@ -1281,6 +1300,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
