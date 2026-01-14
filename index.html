@@ -227,6 +227,48 @@ details.location-details summary::-webkit-details-marker{
   margin-top: 4px;
 }
 
+.legend{
+  margin: 18px 0 12px;
+  text-align: left;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.legend-title{
+  font-weight: 800;
+  color: #0b8a2e;
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+}
+
+.legend-grid{
+  display: grid;
+  grid-template-columns: 1fr; /* mobile default */
+  gap: 6px;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.legend-code{
+  display: inline-block;
+  min-width: 34px;
+  font-weight: 900;
+  color: #0b8a2e;
+}
+
+/* na trochę szerszych ekranach zrób 2 kolumny */
+@media (min-width: 520px){
+  .legend-grid{
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+
+
+    
   </style>
 </head>
 <body>
@@ -234,15 +276,31 @@ details.location-details summary::-webkit-details-marker{
     CHARACTERIZATION LAB INVENTORY 
   </header>
 
-  <main>
-    <div class="search-wrapper">
-      <input
-        id="search"
-        type="text"
-        placeholder="Search item…"
-        autocomplete="off"
-      />
+ <main>
+
+  <div class="legend">
+    <div class="legend-title">Legend</div>
+    <div class="legend-grid">
+      <div><span class="legend-code">GC</span> – glass cabinet</div>
+      <div><span class="legend-code">S</span> – shelf</div>
+      <div><span class="legend-code">C</span> – cabinet</div>
+      <div><span class="legend-code">IR</span> – island right side</div>
+      <div><span class="legend-code">IL</span> – island left side</div>
+      <div><span class="legend-code">ML</span> – main lab</div>
+      <div><span class="legend-code">SL</span> – small lab</div>
+      <div><span class="legend-code">HH</span> – human health lab</div>
     </div>
+  </div>
+
+  <div class="search-wrapper">
+    <input
+      id="search"
+      type="text"
+      placeholder="Search item…"
+      autocomplete="off"
+    />
+  </div>
+
 
     <div id="chips" class="chips"></div>
 <div id="results" class="results"></div>
@@ -1300,6 +1358,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
