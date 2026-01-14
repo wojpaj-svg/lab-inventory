@@ -382,33 +382,17 @@ const topbar = document.createElement("div");
 topbar.className = "location-topbar";
 
 const left = document.createElement("div");
-left.innerHTML = `<span style="font-weight:700;color:#555;">Location</span>`;
+left.innerHTML = `<span style="font-weight:700;color:#555;">Contents</span>`;
 
 const right = document.createElement("div");
-right.className = "location-actions";
-right.innerHTML = `
-  <span class="location-code">${loc}</span>
-  <button class="btn" type="button">Copy</button>
-`;
+right.className = "location-code";
+right.textContent = loc;
 
 topbar.appendChild(left);
 topbar.appendChild(right);
 groupDiv.appendChild(topbar);
 
-// Copy action
-right.querySelector("button").addEventListener("click", async () => {
-  try{
-    await navigator.clipboard.writeText(loc);
-  }catch(e){
-    // fallback (stare przeglądarki)
-    const t = document.createElement("textarea");
-    t.value = loc;
-    document.body.appendChild(t);
-    t.select();
-    document.execCommand("copy");
-    t.remove();
-  }
-});
+
 
 
   // lista itemów w lokacji
@@ -427,7 +411,8 @@ const details = document.createElement("details");
 details.className = "location-details";
 
 const summary = document.createElement("summary");
-summary.textContent = "DETAILS";
+summary.textContent = "Show photos & lab map";
+
 details.appendChild(summary);
 
 const detailsGrid = document.createElement("div");
@@ -443,6 +428,11 @@ img.loading = "lazy";
 img.onerror = () => { img.remove(); };
 
 detailsGrid.appendChild(img);
+  const cap1 = document.createElement("div");
+cap1.className = "details-caption";
+cap1.textContent = "Location photo";
+detailsGrid.appendChild(cap1);
+
 
 // (opcjonalnie) plan labu / mapa strefy
 const mapPath = getMapForLocation(loc); // funkcja niżej
@@ -456,12 +446,10 @@ if (mapPath) {
   detailsGrid.appendChild(mapImg);
 }
 
-details.appendChild(detailsGrid);
+groupDiv.appendChild(itemsDiv);
 groupDiv.appendChild(details);
+resultsDiv.appendChild(groupDiv);
 
-
-  groupDiv.appendChild(itemsDiv);
-  resultsDiv.appendChild(groupDiv);
 });
 
     }
@@ -475,6 +463,7 @@ groupDiv.appendChild(details);
   </script>
 </body>
 </html>
+
 
 
 
