@@ -236,14 +236,7 @@ details.location-details summary::-webkit-details-marker{
   background: #fff;
 }
 
-.legend-title{
-  font-size: 0.75rem;
-  color: #777;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin: 0 0 8px;
-  font-weight: 600;
-}
+
 
 .legend-grid{
   display: grid;
@@ -279,6 +272,38 @@ details.location-details summary::-webkit-details-marker{
   line-height: 1.2;
 }
 
+/* ===== COLLAPSIBLE LEGEND ===== */
+details.legend-details{
+  margin: 6px 0 8px;   /* zmniejsza przerwę pod zielonym headerem */
+}
+
+summary.legend-summary{
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  padding: 6px 4px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  color: #0b8a2e;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+summary.legend-summary::-webkit-details-marker{
+  display: none;
+}
+
+.legend-hint{
+  font-size: 0.75rem;
+  color: #777;
+  font-weight: 400;
+}
+
+details.legend-details[open] summary.legend-summary{
+  margin-bottom: 6px;
+}
 
 
 
@@ -292,51 +317,27 @@ details.location-details summary::-webkit-details-marker{
 
  <main>
 
-  <div class="legend">
-  <div class="legend-title">Legend</div>
+   <details class="legend-details">
+    <summary class="legend-summary">
+      <span class="legend-label">Legend</span>
+      <span class="legend-hint">click to expand</span>
+    </summary>
 
-  <div class="legend-grid">
-    <div class="legend-item">
-      <span class="legend-code">GC</span>
-      <span class="legend-text">glass cabinet</span>
+    <div class="legend">
+      <div class="legend-grid">
+        <div class="legend-item"><span class="legend-code">GC</span><span class="legend-text">glass cabinet</span></div>
+        <div class="legend-item"><span class="legend-code">S</span><span class="legend-text">shelf</span></div>
+        <div class="legend-item"><span class="legend-code">C</span><span class="legend-text">cabinet</span></div>
+        <div class="legend-item"><span class="legend-code">IR</span><span class="legend-text">island right side</span></div>
+        <div class="legend-item"><span class="legend-code">IL</span><span class="legend-text">island left side</span></div>
+        <div class="legend-item"><span class="legend-code">ML</span><span class="legend-text">main lab</span></div>
+        <div class="legend-item"><span class="legend-code">SL</span><span class="legend-text">small lab</span></div>
+        <div class="legend-item"><span class="legend-code">HH</span><span class="legend-text">human health lab</span></div>
+      </div>
     </div>
+  </details>
 
-    <div class="legend-item">
-      <span class="legend-code">S</span>
-      <span class="legend-text">shelf</span>
-    </div>
 
-    <div class="legend-item">
-      <span class="legend-code">C</span>
-      <span class="legend-text">cabinet</span>
-    </div>
-
-    <div class="legend-item">
-      <span class="legend-code">IR</span>
-      <span class="legend-text">island right side</span>
-    </div>
-
-    <div class="legend-item">
-      <span class="legend-code">IL</span>
-      <span class="legend-text">island left side</span>
-    </div>
-
-    <div class="legend-item">
-      <span class="legend-code">ML</span>
-      <span class="legend-text">main lab</span>
-    </div>
-
-    <div class="legend-item">
-      <span class="legend-code">SL</span>
-      <span class="legend-text">small lab</span>
-    </div>
-
-    <div class="legend-item">
-      <span class="legend-code">HH</span>
-      <span class="legend-text">human health lab</span>
-    </div>
-  </div>
-</div>
 
 
   <div class="search-wrapper">
@@ -1405,6 +1406,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
