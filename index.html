@@ -121,14 +121,15 @@ gap: 6px;
 }
 .location-photo{
   width: 100%;
-  height: 220px;          /* <<< ustaw “jak duże ma być” (np. 180–260) */
-  object-fit: cover;      /* <<< to robi standardowy crop */
+  max-height: 260px;        /* kontrola wielkości boxa */
+  object-fit: contain;     /* <<< KLUCZ: pokazuje CAŁE zdjęcie */
   object-position: center;
   border-radius: 10px;
   border: 1px solid #eee;
   margin: 8px 0 12px 0;
-  background: #fafafa;
+  background: #fafafa;     /* ładne tło jeśli proporcje inne */
 }
+
 
 .map-thumb{
   max-height: 220px;   /* <- kontroluje "jak mała" jest mapa */
@@ -1416,6 +1417,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
