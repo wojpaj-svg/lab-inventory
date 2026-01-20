@@ -286,8 +286,9 @@ details.location-details[open] summary::before{
 }
 
 .details-caption{
-  font-size: 0.85rem;
-  color: #666;
+  font-size: 0.75rem;   /* = legend-hint */
+  color: #777;          /* opcjonalnie, żeby było 1:1 */
+  font-weight: 400;     /* opcjonalnie, żeby było 1:1 */
   margin-top: 4px;
 }
 
@@ -1644,7 +1645,7 @@ mapImg.addEventListener("click", () => {
   mapDetails.appendChild(mapImg);
   const mapCaption = document.createElement("div");
 mapCaption.className = "details-caption";
-mapCaption.textContent = "Lab orientation map (click to enlarge)";
+mapCaption.textContent = "click to enlarge";
 mapDetails.appendChild(mapCaption);
 
   detailsGrid.appendChild(mapDetails);
@@ -1668,5 +1669,6 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
