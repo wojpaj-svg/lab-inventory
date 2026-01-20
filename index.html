@@ -199,7 +199,7 @@ details.map-details summary::-webkit-details-marker{
 }
 
 .location-code{
-  font-family: monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   letter-spacing: 0.03em;   /* 🔑 dużo ciaśniej */
   background: #e9f6ee;      /* delikatny zielony */
   color: #0b8a2e;
@@ -211,15 +211,7 @@ details.map-details summary::-webkit-details-marker{
 }
 
 
-.location-badge{
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(11,138,46,0.35);
-  background: rgba(11,138,46,0.08);
-}
+
 
 .location-actions{
   display: flex;
@@ -1456,18 +1448,14 @@ const left = document.createElement("div");
 left.className = "location-label";
 left.textContent = "Location";
 
-const badge = document.createElement("div");
-badge.className = "location-badge";
-
 const codeEl = document.createElement("div");
 codeEl.className = "location-code";
 codeEl.textContent = loc;
 
-badge.appendChild(codeEl);
-
 topbar.appendChild(left);
-topbar.appendChild(badge);
+topbar.appendChild(codeEl);
 groupDiv.appendChild(topbar);
+
 
 
 
@@ -1590,6 +1578,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
