@@ -90,14 +90,26 @@ gap: 6px;
     .no-results {
       margin-top: 20px;
       color: #888;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
+       font-style: italic;   
     }
 
-    footer {
-      margin-top: 30px;
-      font-size: 0.8rem;
-      color: #777;
-    }
+   footer {
+  margin-top: 36px;
+  font-size: 0.75rem;
+  color: #777;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.footer-update {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.7rem;
+  color: #999;
+  font-style: italic;
+}
+
     .chips{
   margin-top: 14px;
   display: flex;
@@ -491,7 +503,11 @@ details.legend-details[open] summary.legend-summary{
 <div id="results" class="results"></div>
 
 
-    <footer>• Developed with Viviana • Designed by WP •</footer>
+   <footer>
+  • Developed with Viviana • Designed by WP •<br>
+  <span class="footer-update">Last update: January 2026</span>
+</footer>
+
   </main>
 
   <script>
@@ -1669,6 +1685,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
