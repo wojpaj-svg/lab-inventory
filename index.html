@@ -71,6 +71,12 @@
   border-bottom: none;     /* mniej "nagłówkowo" */
   padding-bottom: 0;
 }
+/* highlight dopasowania w nazwach */
+.hl{
+  background: #fff3bf;      /* delikatny żółty */
+  padding: 0 2px;
+  border-radius: 3px;
+}
 
 
     .item-meta {
@@ -1330,6 +1336,41 @@ let activeGroup = ""; // np. "GCR", "GCL", "IR", "IL", "ML", "SLUC", "SL", "HH" 
     function normalize(text) {
       return text ? text.toString().toLowerCase().trim() : "";
     }
+
+function escapeHtml(str){
+  return (str ?? "").toString()
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+// Podświetla fragmenty pasujące do query (bez zmiany tekstu w bazie)
+function highlightText(originalText, query){
+  const text = (originalText ?? "").toString();
+  const q = normalize(query);
+  if (!q) return escapeHtml(text);
+
+  // tokeny z query (np. "glass bottle" -> ["glass","bottle"])
+  const tokens = q.split(/\s+/).filter(t => t.length >= 2);
+  if (tokens.length === 0) return escapeHtml(text);
+
+  // pracujemy na wersji "bezpiecznej" HTML
+  let safe = escapeHtml(text);
+
+  // podświetl każdy token (case-insensitive)
+  tokens.forEach(tok => {
+    const re = new RegExp(`(${tok.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "ig");
+    safe = safe.replace(re, `<span class="hl">$1</span>`);
+  });
+
+  return safe;
+}
+
+
+
+    
     function prettyTitle(raw){
   const s = (raw || "").toString().trim().toLowerCase();
   if (!s) return "";
@@ -1615,7 +1656,9 @@ groupDiv.appendChild(topbar);
   groups[loc].forEach(item => {
     const itemDiv = document.createElement("div");
     itemDiv.className = "result-item";
-    itemDiv.innerHTML = `<div class="item-name">${formatItemName(item.name)}</div>`;
+    const shownName = formatItemName(item.name);
+itemDiv.innerHTML = `<div class="item-name">${highlightText(shownName, searchInput.value)}</div>`;
+
 
 
     itemsDiv.appendChild(itemDiv);
@@ -1725,6 +1768,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
