@@ -476,6 +476,38 @@ details.legend-details[open] summary.legend-summary{
   margin-right: auto;
 }
 
+/* ===== IMAGE MODAL (lightbox) ===== */
+.modal{
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;            /* domyślnie ukryty */
+}
+
+.modal.is-open{
+  display: block;
+}
+
+.modal-backdrop{
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+}
+
+.modal-img{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 92vw;
+  max-height: 92vh;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+  cursor: zoom-out;
+}
+
+    
 
     
   </style>
@@ -543,6 +575,40 @@ details.legend-details[open] summary.legend-summary{
   </main>
 
   <script>
+
+    /* ===== IMAGE MODAL (lightbox) ===== */
+let imgModal, imgModalContent;
+
+function openModal(src, altText=""){
+  if (!src) return;
+  imgModalContent.src = src;
+  imgModalContent.alt = altText;
+  imgModal.classList.add("is-open");
+  imgModal.setAttribute("aria-hidden", "false");
+}
+
+function closeModal(){
+  imgModal.classList.remove("is-open");
+  imgModal.setAttribute("aria-hidden", "true");
+  imgModalContent.src = "";
+  imgModalContent.alt = "";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  imgModal = document.getElementById("imgModal");
+  imgModalContent = document.getElementById("imgModalContent");
+
+  // kliknięcie tła lub obrazka zamyka modal
+  imgModal.addEventListener("click", closeModal);
+
+  // ESC zamyka modal
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeModal();
+  });
+});
+
+
+    
     /* ===== DANE ===== */
     const data = [  
 { name: "PLASTIC BOXES 13 L ", location: "GCLS7" },
@@ -1825,10 +1891,11 @@ const fallback = `assets/locations/${baseLoc}.jpg`;
 
 img.dataset.src = primary;   // zamiast src na start
 
-  img.style.cursor = "zoom-in";
+ img.style.cursor = "zoom-in";
 img.addEventListener("click", () => {
-  window.open(img.src, "_blank");
+  openModal(img.src, loc);
 });
+
 
   let imgElTriedFallback = false;
 
@@ -1874,10 +1941,11 @@ if (mapPath) {
   mapImg.loading = "lazy";
   mapImg.onerror = () => { mapDetails.remove(); };
 
-  mapImg.style.cursor = "zoom-in";
+ mapImg.style.cursor = "zoom-in";
 mapImg.addEventListener("click", () => {
-  window.open(mapPath, "_blank");
+  openModal(mapImg.src, `Map for ${loc}`);
 });
+
 
 
   mapDetails.appendChild(mapImg);
@@ -1915,8 +1983,17 @@ document.addEventListener("click", (e) => {
     resultsDiv.innerHTML =
       '<div class="no-results">Start typing to search…</div>';
   </script>
+  
+<!-- ===== IMAGE MODAL (lightbox) ===== -->
+<div id="imgModal" class="modal" aria-hidden="true">
+  <div class="modal-backdrop"></div>
+  <img id="imgModalContent" class="modal-img" alt="">
+</div>
+
+  
 </body>
 </html>
+
 
 
 
