@@ -306,8 +306,8 @@ details.location-details[open] summary::before{
   border: 1px solid #0b8a2e;
   border-radius: 999px;
 
-  width: 38px;          /* ⬅ STAŁA szerokość */
-  height: 26px;         /* ⬅ STAŁA wysokość */
+  width: 34px;          /* ⬅ STAŁA szerokość */
+  height: 24px;         /* ⬅ STAŁA wysokość */
 
   display: inline-flex;
   align-items: center;
@@ -351,11 +351,12 @@ details.location-details[open] summary::before{
 
 .legend-item{
   display: grid;
-  grid-template-columns: 48px 1fr; /* stała szerokość kapsułki */
+  grid-template-columns: 34px 1fr; /* ⬅ BYŁO 48px */
   align-items: center;
-  gap: 5px;                        /* ⬅ MNIEJSZY odstęp */
+  gap: 4px;                        /* ⬅ minimalnie ciaśniej */
   min-width: 0;
 }
+
 
 .legend-text{
   color: #333;
@@ -1666,6 +1667,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
