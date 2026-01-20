@@ -315,19 +315,28 @@ details.location-details[open] summary::before{
 
 
 .legend-item{
-  display: flex;
+  display: grid;
+  grid-template-columns: 48px 1fr; /* 48px = stała szerokość kapsułki */
   align-items: center;
   gap: 10px;
+  min-width: 0; /* ważne dla ellipsis */
 }
+
 
 
 
 
 .legend-text{
   color: #333;
-  font-size: 0.9rem;
+  font-size: 0.85rem;        /* troszkę mniejsze, żeby się mieściło */
   line-height: 1.2;
+  white-space: nowrap;       /* NIE łam */
+  overflow: hidden;          /* ukryj nadmiar */
+  text-overflow: ellipsis;   /* ... */
+  text-align: left;
+  min-width: 0;              /* ważne przy grid */
 }
+
 
 /* ===== COLLAPSIBLE LEGEND ===== */
 details.legend-details{
@@ -388,9 +397,18 @@ details.legend-details[open] summary.legend-summary{
 
     /* Legend chips = jak badge "location-code" (spójnie) */
 .legend .chip{
+  width: 48px;                 /* identyczna szerokość dla wszystkich */
+  justify-content: center;     /* tekst na środku */
+  padding: 6px 0;              /* bez “rozpychania” na boki */
   background: #e9f6ee;
   font-weight: 700;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;      /* ciaśniej niż 0.03 */
+}
+
+.legend{
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 
@@ -1622,6 +1640,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
