@@ -40,6 +40,30 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.08);
     }
 
+/* Suggestions dropdown */
+.suggestions{
+  text-align: left;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  margin-top: 8px;
+  padding: 6px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+.sugg-item{
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.sugg-item:hover{
+  background: #f3f7f4;
+}
+
+    
     #search {
       flex: 1;
       border: none;
@@ -502,6 +526,8 @@ details.legend-details[open] summary.legend-summary{
       autocomplete="off"
     />
   </div>
+   <div id="suggestions" class="suggestions" style="display:none;"></div>
+
 
 <div id="chipsTitle" class="chips-title">Filter by location</div>
 <div id="chips" class="chips"></div>
@@ -1328,6 +1354,64 @@ details.legend-details[open] summary.legend-summary{
     const chipsDiv = document.getElementById("chips");
     const chipsTitle = document.getElementById("chipsTitle");
 
+    const suggestionsDiv = document.getElementById("suggestions");
+
+// --- indeks słów do sugestii (zbudowany raz) ---
+const WORD_FREQ = (() => {
+  const freq = new Map();
+  const stop = new Set(["with","and","the","of","in","to","for","ml","qty","box","bags","bag","pcs","pc","new","used"]);
+  data.forEach(item => {
+    const words = normalize(item.name).split(/[^a-z0-9]+/).filter(Boolean);
+    words.forEach(w => {
+      if (w.length < 3) return;
+      if (stop.has(w)) return;
+      freq.set(w, (freq.get(w) || 0) + 1);
+    });
+  });
+  return freq;
+})();
+
+function getSuggestions(q){
+  const s = normalize(q);
+  if (s.length < 2) return [];
+
+  const out = [];
+  for (const [w, c] of WORD_FREQ.entries()){
+    if (w.startsWith(s)) out.push([w, c]);
+  }
+  out.sort((a,b) => b[1] - a[1]); // najczęstsze pierwsze
+  return out.slice(0, 5).map(x => x[0]);
+}
+
+function renderSuggestions(){
+  const q = searchInput.value;
+  const sugg = getSuggestions(q);
+
+  if (!q || normalize(q).length < 2 || sugg.length === 0){
+    suggestionsDiv.style.display = "none";
+    suggestionsDiv.innerHTML = "";
+    return;
+  }
+
+  suggestionsDiv.innerHTML = sugg.map(w =>
+    `<div class="sugg-item" data-word="${w}">${w}</div>`
+  ).join("");
+
+  suggestionsDiv.style.display = "block";
+
+  // klik na sugestię -> wstawia do input i odpala search()
+  suggestionsDiv.querySelectorAll(".sugg-item").forEach(el => {
+    el.addEventListener("click", () => {
+      searchInput.value = el.dataset.word;
+      suggestionsDiv.style.display = "none";
+      suggestionsDiv.innerHTML = "";
+      search();
+      searchInput.focus();
+    });
+  });
+}
+
+
     
 let activeGroup = ""; // np. "GCR", "GCL", "IR", "IL", "ML", "SLUC", "SL", "HH" (puste = ALL)
 
@@ -1760,7 +1844,17 @@ resultsDiv.appendChild(groupDiv);
     }
 
     // live search
-    searchInput.addEventListener("input", search);
+   searchInput.addEventListener("input", () => {
+  renderSuggestions();
+  search();
+});
+
+// schowaj sugestie po kliknięciu poza polem
+document.addEventListener("click", (e) => {
+  if (!suggestionsDiv.contains(e.target) && e.target !== searchInput){
+    suggestionsDiv.style.display = "none";
+  }
+});
 
     // tekst startowy
     resultsDiv.innerHTML =
@@ -1768,6 +1862,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
