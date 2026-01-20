@@ -298,6 +298,44 @@ details.location-details[open] summary::before{
   border-radius: 12px;
   background: #fff;
 }
+/* Legend badge = 1:1 jak .location-code (tabelka) */
+.legend-code{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  letter-spacing: 0.03em;
+  background: #e9f6ee;
+  color: #0b8a2e;
+  border: 1px solid #0b8a2e;
+  padding: 3px 10px;              /* IDENTYCZNIE jak .location-code */
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.9rem;              /* IDENTYCZNIE jak .location-code */
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;                /* żeby ML/IL itd wyglądały równo */
+}
+
+/* Tekst opisu w legendzie ma być mniejszy niż reszta UI */
+.legend-text{
+  color: #333;
+  font-size: 0.8rem;              /* mniejsze niż 0.85 */
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  min-width: 0;
+}
+
+/* Kolumna na badge w legendzie dopasowana pod .legend-code */
+.legend-item{
+  display: grid;
+  grid-template-columns: 56px 1fr; /* było 48px */
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
 
 
 
@@ -391,19 +429,7 @@ details.legend-details[open] summary.legend-summary{
 #chipsTitle { display: none; }
 #chips { display: none; }
 
-    /* Legend badges use chip style */
-.legend-chip { cursor: default; }
-.legend-grid .chip { margin: 0; } /* czysto, bez “dziwnych” przesunięć */
-
-    /* Legend chips = jak badge "location-code" (spójnie) */
-.legend .chip{
-  width: 48px;                 /* identyczna szerokość dla wszystkich */
-  justify-content: center;     /* tekst na środku */
-  padding: 6px 0;              /* bez “rozpychania” na boki */
-  background: #e9f6ee;
-  font-weight: 700;
-  letter-spacing: 0.02em;      /* ciaśniej niż 0.03 */
-}
+   
 
 .legend{
   max-width: 720px;
@@ -429,17 +455,23 @@ details.legend-details[open] summary.legend-summary{
   </summary>
 
   <div class="legend">
-    <div class="legend-grid">
-      <div class="legend-item"><span class="chip legend-chip">ML</span><span class="legend-text">main lab</span></div>
-      <div class="legend-item"><span class="chip legend-chip">IL</span><span class="legend-text">island left side</span></div>
-      <div class="legend-item"><span class="chip legend-chip">SL</span><span class="legend-text">small lab</span></div>
-      <div class="legend-item"><span class="chip legend-chip">IR</span><span class="legend-text">island right side</span></div>
-      <div class="legend-item"><span class="chip legend-chip">HH</span><span class="legend-text">human health lab</span></div>
-      <div class="legend-item"><span class="chip legend-chip">C</span><span class="legend-text">cabinet</span></div>
-      <div class="legend-item"><span class="chip legend-chip">GC</span><span class="legend-text">glass cabinet</span></div>
-      <div class="legend-item"><span class="chip legend-chip">S</span><span class="legend-text">shelf</span></div>
-      <div class="legend-item"><span class="chip legend-chip">D</span><span class="legend-text">drawer</span></div>
-    </div>
+  <div class="legend-grid">
+  <!-- Rząd 1: ML | SL | HH -->
+  <div class="legend-item"><span class="legend-code">ML</span><span class="legend-text">main lab</span></div>
+  <div class="legend-item"><span class="legend-code">SL</span><span class="legend-text">small lab</span></div>
+  <div class="legend-item"><span class="legend-code">HH</span><span class="legend-text">human health lab</span></div>
+
+  <!-- Rząd 2: IR | IL | GC -->
+  <div class="legend-item"><span class="legend-code">IR</span><span class="legend-text">island right side</span></div>
+  <div class="legend-item"><span class="legend-code">IL</span><span class="legend-text">island left side</span></div>
+  <div class="legend-item"><span class="legend-code">GC</span><span class="legend-text">glass cabinet</span></div>
+
+  <!-- Rząd 3: C | D | S -->
+  <div class="legend-item"><span class="legend-code">C</span><span class="legend-text">cabinet</span></div>
+  <div class="legend-item"><span class="legend-code">D</span><span class="legend-text">drawer</span></div>
+  <div class="legend-item"><span class="legend-code">S</span><span class="legend-text">shelf</span></div>
+</div>
+
   </div>
 </details>
 
@@ -1640,6 +1672,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
