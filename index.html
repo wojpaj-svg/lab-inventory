@@ -1566,7 +1566,13 @@ matches.forEach(item => {
   groups[loc].push(item);
 });
 
-  // TOPBAR: lewo = "Location", prawo = kod + link "Show..."
+      // ===== RENDER: każda lokacja osobno =====
+Object.keys(groups).sort().forEach(loc => {
+
+  const groupDiv = document.createElement("div");
+  groupDiv.className = "location-group";
+
+  // TOPBAR: lewo = "Location", prawo = kod + linki
   const topbar = document.createElement("div");
   topbar.className = "location-topbar";
 
@@ -1590,12 +1596,6 @@ matches.forEach(item => {
   topbar.appendChild(right);
   groupDiv.appendChild(topbar);
 
-
-
-
-
-
-
   // lista itemów w lokacji
   const itemsDiv = document.createElement("div");
   itemsDiv.className = "location-items";
@@ -1604,107 +1604,95 @@ matches.forEach(item => {
     const itemDiv = document.createElement("div");
     itemDiv.className = "result-item";
     itemDiv.innerHTML = `<div class="item-name">${formatItemName(item.name)}</div>`;
-
-
     itemsDiv.appendChild(itemDiv);
   });
 
   // DETAILS (zdjęcie dopiero po kliknięciu)
-const details = document.createElement("details");
-details.className = "location-details";
+  const details = document.createElement("details");
+  details.className = "location-details";
 
-const summary = document.createElement("summary");
-summary.textContent = "Show photos & lab map";
+  const summary = document.createElement("summary");
+  summary.textContent = "Show photos & lab map";
 
-details.appendChild(summary);
+  details.appendChild(summary);
 
-const detailsGrid = document.createElement("div");
-detailsGrid.className = "details-grid";
+  const detailsGrid = document.createElement("div");
+  detailsGrid.className = "details-grid";
 
-links.appendChild(details);
+  // przeniesienie przycisku do topbara (po prawej)
+  links.appendChild(details);
 
-      
+  // zdjęcie lokacji
+  const img = document.createElement("img");
+  img.className = "location-photo";
+  img.alt = loc;
+  img.loading = "lazy";
 
-// zdjęcie szuflady/lokacji
-const img = document.createElement("img");
-img.className = "location-photo";
-img.alt = loc;
-img.loading = "lazy";
+  const primary = `assets/locations/${loc}.jpg`;
+  const baseLoc = getBaseLoc(loc);                 // np. HHC1S1 -> HHC1
+  const fallback = `assets/locations/${baseLoc}.jpg`;
 
-const primary = `assets/locations/${loc}.jpg`;
-const baseLoc = getBaseLoc(loc);                // np. HHC1S1 -> HHC1
-const fallback = `assets/locations/${baseLoc}.jpg`;
-
-
-img.src = primary;
+  img.src = primary;
   img.style.cursor = "zoom-in";
-img.addEventListener("click", () => {
-  window.open(img.src, "_blank");
-});
+  img.addEventListener("click", () => window.open(img.src, "_blank"));
 
-img.onerror = () => {
-  // jeśli nie ma np. HHC1S1.jpg, spróbuj HHC1.jpg
-  if (img.src.endsWith(`/${loc}.jpg`)) {
-    // uniknij pętli: jeśli baseLoc == loc, a pliku nie ma -> usuń
-    if (baseLoc && baseLoc !== loc) {
-      img.src = fallback;
+  img.onerror = () => {
+    if (img.src.endsWith(`/${loc}.jpg`)) {
+      if (baseLoc && baseLoc !== loc) {
+        img.src = fallback;
+      } else {
+        img.remove();
+      }
     } else {
       img.remove();
     }
-  } else {
-    img.remove();
-  }
-};
+  };
 
+  detailsGrid.appendChild(img);
 
-
-detailsGrid.appendChild(img);
   const cap1 = document.createElement("div");
-cap1.className = "details-caption";
-cap1.textContent = "Location photo";
-detailsGrid.appendChild(cap1);
+  cap1.className = "details-caption";
+  cap1.textContent = "Location photo";
+  detailsGrid.appendChild(cap1);
 
+  // mapa labu
+  const mapPath = getMapForLocation(cleanLoc(loc));
+  if (mapPath) {
+    const mapDetails = document.createElement("details");
+    mapDetails.className = "map-details";
 
-// (opcjonalnie) plan labu / mapa strefy
-// (opcjonalnie) plan labu / mapa strefy - pokazuj dopiero po kliknięciu
-const mapPath = getMapForLocation(cleanLoc(loc));
+    const mapSummary = document.createElement("summary");
+    mapSummary.textContent = "Show lab map";
+    mapDetails.appendChild(mapSummary);
 
-if (mapPath) {
-  const mapDetails = document.createElement("details");
-  mapDetails.className = "map-details";
+    const mapImg = document.createElement("img");
+    mapImg.className = "location-photo map-thumb";
+    mapImg.src = mapPath;
+    mapImg.alt = `Map for ${loc}`;
+    mapImg.loading = "lazy";
+    mapImg.onerror = () => mapDetails.remove();
 
-  const mapSummary = document.createElement("summary");
-  mapSummary.textContent = "Show lab map";
-  mapDetails.appendChild(mapSummary);
+    mapImg.style.cursor = "zoom-in";
+    mapImg.addEventListener("click", () => window.open(mapPath, "_blank"));
 
-  const mapImg = document.createElement("img");
-  mapImg.className = "location-photo map-thumb"; // <- mniejsze
-  mapImg.src = mapPath;
-  mapImg.alt = `Map for ${loc}`;
-  mapImg.loading = "lazy";
-  mapImg.onerror = () => { mapDetails.remove(); };
+    mapDetails.appendChild(mapImg);
 
-  mapImg.style.cursor = "zoom-in";
-mapImg.addEventListener("click", () => {
-  window.open(mapPath, "_blank");
+    const mapCaption = document.createElement("div");
+    mapCaption.className = "details-caption";
+    mapCaption.textContent = "Lab orientation map (click to enlarge)";
+    mapDetails.appendChild(mapCaption);
+
+    detailsGrid.appendChild(mapDetails);
+  }
+
+  details.appendChild(detailsGrid);
+
+  // składanie sekcji
+  groupDiv.appendChild(itemsDiv);
+  resultsDiv.appendChild(groupDiv);
 });
 
-
-  mapDetails.appendChild(mapImg);
-  const mapCaption = document.createElement("div");
-mapCaption.className = "details-caption";
-mapCaption.textContent = "Lab orientation map (click to enlarge)";
-mapDetails.appendChild(mapCaption);
-
-  detailsGrid.appendChild(mapDetails);
-}
-
-details.appendChild(detailsGrid);
-groupDiv.appendChild(itemsDiv);
-resultsDiv.appendChild(groupDiv);
-
-});
-
+ 
     }
 
     // live search
@@ -1716,6 +1704,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
