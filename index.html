@@ -1230,20 +1230,86 @@ function renderChips(matches) {
   });
 }
 
-    function getMapForLocation(loc){
-  const prefix = getPrefix(loc); // masz już tę funkcję
-  const maps = {
-    "GCLS": "assets/maps/GCLS.jpg",
-    "IRD": "assets/maps/IRD.jpg",
-    "ILC": "assets/maps/ILC.jpg",
-    "MLD": "assets/maps/MLD.jpg",
-    "SLC": "assets/maps/SLC.jpg",
-    "SLUC": "assets/maps/SLUC.jpg",
-    "HHC": "assets/maps/HHC.jpg",
-    "HHD": "assets/maps/HHD.jpg"
+function getMapForLocation(loc){
+  const L = cleanLoc(loc); // np. "HHC1S1" albo "GCLS5"
+
+  // 1) Dokładne przypisania: LOKACJA -> NAZWA MAPY (bez .jpg)
+  // Zgodnie z Twoją tabelą.
+  const mapByLoc = {
+    // ===== GLASS CABINET =====
+    "GCRS1":"GCR","GCRS2":"GCR","GCRS3":"GCR","GCRS4":"GCR","GCRS5":"GCR","GCRS6":"GCR","GCRS7":"GCR","GCRS8":"GCR","GCRS9":"GCR",
+    "GCLS1":"GCL","GCLS2":"GCL","GCLS3":"GCL","GCLS4":"GCL","GCLS5":"GCL","GCLS6":"GCL","GCLS7":"GCL","GCLS8":"GCL","GCLS9":"GCL",
+
+    // ===== ISLAND RIGHT =====
+    "IRD1":"IRA","IRD2":"IRA","IRD3":"IRA","IRD4":"IRA","IRD5":"IRA","IRD6":"IRA","IRD7":"IRA","IRD8":"IRA","IRD9":"IRA",
+    "IRC1":"IRB",              // jeśli masz dokładnie "IRC1" jako lokację
+    "IRC2":"IRC",              // UWAGA: w Twojej liście IRC2 występuje też jako IRE – jeśli potrzebujesz tego rozróżnienia, daj znać jak odróżnić przypadki
+    "IRD10":"IRD","IRD11":"IRD","IRD12":"IRD","IRD13":"IRD","IRD14":"IRD","IRD15":"IRD","IRD16":"IRD","IRD17":"IRD","IRD18":"IRD",
+    // "IRC2":"IRE",           // NIE MOŻE być jednocześnie drugiego IRC2 w JS obiekcie – jedna wartość nadpisze drugą
+
+    // ===== ISLAND LEFT =====
+    "ILD10":"ILA","ILD11":"ILA","ILD12":"ILA","ILD13":"ILA","ILD14":"ILA","ILD15":"ILA","ILD16":"ILA","ILD17":"ILA","ILD18":"ILA",
+    "ILC3":"ILB",
+    "ILC2":"ILC",
+    "ILD1":"ILD","ILD2":"ILD","ILD3":"ILD","ILD4":"ILD","ILD5":"ILD","ILD6":"ILD","ILD7":"ILD","ILD8":"ILD","ILD9":"ILD",
+    "ILC1":"ILE",
+
+    // ===== MAIN LAB =====
+    "MLD1":"MLA","MLD2":"MLA","MLD3":"MLA","MLD4":"MLA","MLD5":"MLA","MLD6":"MLA",
+    "MLC1":"MLB",
+    "MLD7":"MLC","MLD8":"MLC","MLD9":"MLC","MLD10":"MLC",
+    "MLD11":"MLD","MLD12":"MLD","MLD13":"MLD",
+    "MLD14":"MLE","MLD15":"MLE","MLD16":"MLE",
+    "MLD17":"MLF","MLD18":"MLF","MLD19":"MLF",
+    "MLD20":"MLG","MLD21":"MLG",
+    "MLD22":"MLH","MLD23":"MLH",
+    "MLD24":"MLI","MLD25":"MLI",
+    "MLD26":"MLJ","MLD27":"MLJ","MLD28":"MLJ",
+
+    // ===== SMALL LAB =====
+    "SLUC1":"SLUCA","SLUC2":"SLUCA",
+    "SLUC3":"SLUCB","SLUC4":"SLUCB","SLUC5":"SLUCB",
+
+    "SLC1":"SLA","SLC2":"SLA",
+    "SLC3":"SLB",
+    "SLD1":"SLC","SLD2":"SLC","SLD3":"SLC","SLD4":"SLC","SLD5":"SLC","SLD6":"SLC","SLD7":"SLC","SLD8":"SLC","SLD9":"SLC",
+    "SLC4":"SLD",
+    "SLC5":"SLE",
+
+    // ===== HUMAN HEALTH LAB =====
+    "HHC3":"HHA",
+    "HHD8":"HHB","HHD9":"HHB","HHD10":"HHB","HHD11":"HHB","HHD12":"HHB","HHD13":"HHB","HHD14":"HHB",
+    "HHD1":"HHC","HHD2":"HHC","HHD3":"HHC","HHD4":"HHC","HHD5":"HHC","HHD6":"HHC","HHD7":"HHC",
+    "HHC1":"HHD","HHC2":"HHD"
   };
-  return maps[prefix] || "";
+
+  // 2) Najpierw próbuj dokładny match
+  if (mapByLoc[L]) return `assets/maps/${mapByLoc[L]}.jpg`;
+
+  // 3) Jeśli masz lokacje typu HHC1S1 / SLC1S2 / IRC1S1 itd. -> spróbuj bazowego kodu bez "S1/S2"
+  // np. "HHC1S1" -> "HHC1"
+  const base = L.replace(/S\d+$/i, "");
+  if (mapByLoc[base]) return `assets/maps/${mapByLoc[base]}.jpg`;
+
+  // 4) Ostateczny fallback: po prefiksie (jak wcześniej), jeśli chcesz
+  // (możesz to wywalić, jeśli wolisz tylko twarde mapowanie)
+  const prefix = getPrefix(L);
+  const mapByPrefix = {
+    "GCLS":"GCL",
+    "GCRS":"GCR",
+    "IRD":"IRA",   // tylko awaryjnie – lepiej mieć mapowanie per-lokacja
+    "ILD":"ILD",
+    "ILC":"ILC",
+    "MLD":"MLA",
+    "SLC":"SLA",
+    "SLD":"SLC",
+    "SLUC":"SLUCA",
+    "HHC":"HHD",
+    "HHD":"HHC"
+  };
+  return mapByPrefix[prefix] ? `assets/maps/${mapByPrefix[prefix]}.jpg` : "";
 }
+
 
 
     function search() {
@@ -1417,6 +1483,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
