@@ -1190,6 +1190,10 @@ let activePrefix = ""; // np. "GCLS", "IRD", "ILC" (puste = ALL)
     .replace(/\s+/g, ""); // usuwa wszystkie spacje (także w środku)
 }
 
+function getBaseLoc(code){
+  // usuwa końcówkę typu S1 / S2 / S10
+  return cleanLoc(code).replace(/S\d+$/i, "");
+}
 
 function renderChips(matches) {
   chipsDiv.innerHTML = "";
@@ -1406,7 +1410,9 @@ img.alt = loc;
 img.loading = "lazy";
 
 const primary = `assets/locations/${loc}.jpg`;
-const fallback = `assets/locations/${getPrefix(loc)}.jpg`;
+const baseLoc = getBaseLoc(loc);                // np. HHC1S1 -> HHC1
+const fallback = `assets/locations/${baseLoc}.jpg`;
+
 
 img.src = primary;
   img.style.cursor = "zoom-in";
@@ -1415,13 +1421,19 @@ img.addEventListener("click", () => {
 });
 
 img.onerror = () => {
-  // jeśli nie ma np. GCLS5.jpg, spróbuj GCLS.jpg
-  if (img.src.endsWith(`${loc}.jpg`)) {
-    img.src = fallback;
+  // jeśli nie ma np. HHC1S1.jpg, spróbuj HHC1.jpg
+  if (img.src.endsWith(`/${loc}.jpg`)) {
+    // uniknij pętli: jeśli baseLoc == loc, a pliku nie ma -> usuń
+    if (baseLoc && baseLoc !== loc) {
+      img.src = fallback;
+    } else {
+      img.remove();
+    }
   } else {
     img.remove();
   }
 };
+
 
 
 detailsGrid.appendChild(img);
@@ -1483,6 +1495,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
