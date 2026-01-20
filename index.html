@@ -1516,6 +1516,44 @@ function formatItemName(name){
     .replace(/\bcd\b/g, "CD");
 }
 
+async function loadImageWithCache(imgEl){
+  const url = imgEl.dataset.src;
+  if (!url) return;
+
+  const key = "imgcache:" + url;
+
+  // 1) jeśli jest w localStorage -> użyj od razu
+  const cached = localStorage.getItem(key);
+  if (cached){
+    imgEl.src = cached;
+    return;
+  }
+
+  // 2) jeśli nie ma -> pobierz, zamień na base64, zapisz
+  try{
+    const res = await fetch(url, { cache: "force-cache" });
+    if (!res.ok) throw new Error("fetch failed");
+    const blob = await res.blob();
+
+    const dataUrl = await new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(r.result);
+      r.onerror = reject;
+      r.readAsDataURL(blob);
+    });
+
+    // UWAGA: localStorage ma limit ~5MB, więc zapisujemy ostrożnie
+    // jeśli obraz za duży, to po prostu nie zapisze (catch)
+    try{ localStorage.setItem(key, dataUrl); } catch(e){}
+
+    imgEl.src = dataUrl;
+  }catch(e){
+    // jeśli fetch nie działa, spróbuj normalnie src (przeglądarka sama może cache’ować)
+    imgEl.src = url;
+  }
+}
+
+    
 
 const CHIP_ORDER = ["GCR","GCL","IR","IL","ML","SLUC","SL","HH"]; // stała kolejność (bardziej "pro")
 
@@ -1752,6 +1790,20 @@ itemDiv.innerHTML = `<div class="item-name">${highlightText(shownName, searchInp
 const details = document.createElement("details");
 details.className = "location-details";
 
+  details.addEventListener("toggle", () => {
+  if (details.open){
+    // załaduj tylko przy pierwszym otwarciu
+    if (!img.src) loadImageWithCache(img);
+
+    // mapa: jeśli istnieje, znajdź obrazek mapy i załaduj
+    const mapImgEl = details.querySelector("img.map-thumb");
+    if (mapImgEl && !mapImgEl.src){
+      loadImageWithCache(mapImgEl);
+    }
+  }
+});
+
+
 const summary = document.createElement("summary");
 summary.textContent = "Show photos & lab map";
 
@@ -1771,25 +1823,27 @@ const baseLoc = getBaseLoc(loc);                // np. HHC1S1 -> HHC1
 const fallback = `assets/locations/${baseLoc}.jpg`;
 
 
-img.src = primary;
+img.dataset.src = primary;   // zamiast src na start
+
   img.style.cursor = "zoom-in";
 img.addEventListener("click", () => {
   window.open(img.src, "_blank");
 });
 
+  let imgElTriedFallback = false;
+
+
 img.onerror = () => {
-  // jeśli nie ma np. HHC1S1.jpg, spróbuj HHC1.jpg
-  if (img.src.endsWith(`/${loc}.jpg`)) {
-    // uniknij pętli: jeśli baseLoc == loc, a pliku nie ma -> usuń
-    if (baseLoc && baseLoc !== loc) {
-      img.src = fallback;
-    } else {
-      img.remove();
-    }
+  // jeśli padł primary -> spróbuj fallback
+  if (imgElTriedFallback !== true && baseLoc && baseLoc !== loc){
+    imgElTriedFallback = true;
+    img.dataset.src = fallback;
+    loadImageWithCache(img);
   } else {
     img.remove();
   }
 };
+
 
 
 
@@ -1814,7 +1868,8 @@ if (mapPath) {
 
   const mapImg = document.createElement("img");
   mapImg.className = "location-photo map-thumb"; // <- mniejsze
-  mapImg.src = mapPath;
+ mapImg.dataset.src = mapPath;
+
   mapImg.alt = `Map for ${loc}`;
   mapImg.loading = "lazy";
   mapImg.onerror = () => { mapDetails.remove(); };
@@ -1862,6 +1917,7 @@ document.addEventListener("click", (e) => {
   </script>
 </body>
 </html>
+
 
 
 
