@@ -300,21 +300,24 @@ details.location-details[open] summary::before{
 }
 /* Legend badge = 1:1 jak .location-code (tabelka) */
 .legend-code{
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  letter-spacing: 0.03em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   background: #e9f6ee;
   color: #0b8a2e;
   border: 1px solid #0b8a2e;
-  padding: 3px 10px;              /* IDENTYCZNIE jak .location-code */
   border-radius: 999px;
-  font-weight: 700;
-  font-size: 0.9rem;              /* IDENTYCZNIE jak .location-code */
-  line-height: 1;
+
+  width: 38px;          /* ⬅ STAŁA szerokość */
+  height: 26px;         /* ⬅ STAŁA wysokość */
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 44px;                /* żeby ML/IL itd wyglądały równo */
+
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
+
 
 /* Tekst opisu w legendzie ma być mniejszy niż reszta UI */
 .legend-text{
@@ -331,11 +334,11 @@ details.location-details[open] summary::before{
 /* Kolumna na badge w legendzie dopasowana pod .legend-code */
 .legend-item{
   display: grid;
-  grid-template-columns: 56px 1fr; /* było 48px */
+  grid-template-columns: auto 1fr;
   align-items: center;
   gap: 10px;
-  min-width: 0;
 }
+
 
 
 
@@ -1672,6 +1675,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
