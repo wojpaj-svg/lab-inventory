@@ -153,8 +153,11 @@ details.map-details{
 details.map-details summary{
   cursor: pointer;
   user-select: none;
+  width: 100%;
+  text-align: right;
+   font-size: 0.78rem;
   color: #0b8a2e;
-  font-weight: 700;
+  font-weight: 600;
   list-style: none;
 }
 
@@ -246,8 +249,11 @@ details.location-details summary{
   cursor: pointer;
   user-select: none;
   color: #0b8a2e;
+  width: 100%;
+  text-align: right;
+  font-size: 0.78rem; 
   font-weight: 600;
-  font-size: 0.9rem;
+ 
   list-style: none;
 }
 
@@ -257,14 +263,16 @@ details.location-details summary:hover{
 }
     
 /* ikonka dla toggle (chevron) */
-details.location-details summary::before{
-  content: "▸ ";
+/* strzałka po prawej (dla Show photos...) */
+details.location-details summary::after{
+  content: " ▸";
   color: #0b8a2e;
 }
 
-details.location-details[open] summary::before{
-  content: "▾ ";
+details.location-details[open] summary::after{
+  content: " ▾";
 }
+
 
     
 details.location-details summary::-webkit-details-marker{
@@ -1667,6 +1675,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
