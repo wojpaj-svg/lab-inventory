@@ -1256,17 +1256,30 @@ let activePrefix = ""; // np. "GCLS", "IRD", "ILC" (puste = ALL)
   const m = loc.match(/^[A-Z]+/);
   return m ? m[0] : "";
 }
-    function cleanLoc(code){
+   function cleanLoc(code){
   return (code || "")
     .toString()
     .toUpperCase()
-    .replace(/\s+/g, ""); // usuwa wszystkie spacje (także w środku)
+    .replace(/\s+/g, "");
 }
 
 function getBaseLoc(code){
   // usuwa końcówkę typu S1 / S2 / S10
   return cleanLoc(code).replace(/S\d+$/i, "");
 }
+
+/* ===== FORMATOWANIE NAZW ITEMÓW (UI ONLY) ===== */
+function formatItemName(name){
+  if (!name) return "";
+
+  return name
+    .toLowerCase()
+    .replace(/\bph\b/g, "pH")
+    .replace(/\bdna\b/g, "DNA")
+    .replace(/\brna\b/g, "RNA")
+    .replace(/\bcd\b/g, "CD");
+}
+
 
 function renderChips(matches) {
   chipsDiv.innerHTML = "";
@@ -1467,7 +1480,8 @@ groupDiv.appendChild(topbar);
   groups[loc].forEach(item => {
     const itemDiv = document.createElement("div");
     itemDiv.className = "result-item";
-    itemDiv.innerHTML = `<div class="item-name">${prettyTitle(item.name)}</div>`;
+    itemDiv.innerHTML = `<div class="item-name">${formatItemName(item.name)}</div>`;
+
 
     itemsDiv.appendChild(itemDiv);
   });
@@ -1576,6 +1590,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
