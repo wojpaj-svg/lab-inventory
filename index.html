@@ -53,25 +53,25 @@
       text-align: left;
     }
 
-    .result-item {
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 8px 12px;
-      margin-bottom: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
+ .result-item{
+  border: 1px solid #ececec;
+  border-radius: 10px;
+  padding: 8px 12px;          /* trochę mniejsze */
+  margin-bottom: 8px;
+  box-shadow: none;           /* mniej ciężko */
+  background: #fff;
+}
 
-    .item-name {
-      font-weight: 500;
-        font-size: 0.95rem;
+
+    .item-name{
+  font-weight: 500;        /* było 700 */
+  font-size: 0.95rem;
   color: #222;
-      margin-bottom: 8px;
-      border-bottom: 1px solid #f0f0f0;
-      padding-bottom: 6px;
-text-transform: none;
-      /* jeśli kiedyś zmienisz dane na normalny zapis,
-         możesz tu dodać: text-transform: capitalize; */
-    }
+  margin-bottom: 0;
+  border-bottom: none;     /* mniej "nagłówkowo" */
+  padding-bottom: 0;
+}
+
 
     .item-meta {
       display: flex;
@@ -173,21 +173,47 @@ details.map-details summary::-webkit-details-marker{
 .location-items{
   padding-left: 6px;
 }
+/* ===== LOCATION HEADER (clean + readable) ===== */
+.location-group{
+  margin-bottom: 18px;
+  padding: 10px 12px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  background: #fcfcfc;
+}
+
 .location-topbar{
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin: 10px 0 6px 0;
-  padding-bottom: 6px;
-  border-bottom: 2px solid #0b8a2e;
+  margin: 0 0 10px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e6e6e6;  /* mniej agresywne niż 2px */
+}
+
+.location-label{
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #666;
 }
 
 .location-code{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-weight: 800;
-  color: #0b8a2e;
   font-size: 1.05rem;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.08em;
+  color: #111;                 /* dostępnościowo: tekst ciemny */
+}
+
+.location-badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(11,138,46,0.35);
+  background: rgba(11,138,46,0.08);
 }
 
 .location-actions{
@@ -217,11 +243,10 @@ details.location-details summary{
   user-select: none;
   color: #0b8a2e;
   font-weight: 600;
-  opacity: 0.9;
-   color: #0b8a2e;
   font-size: 0.9rem;
   list-style: none;
 }
+
 details.location-details summary:hover{
   opacity: 1;
   text-decoration: underline;
@@ -1212,6 +1237,15 @@ let activePrefix = ""; // np. "GCLS", "IRD", "ILC" (puste = ALL)
     function normalize(text) {
       return text ? text.toString().toLowerCase().trim() : "";
     }
+    function prettyTitle(raw){
+  const s = (raw || "").toString().trim().toLowerCase();
+  if (!s) return "";
+  // zamień wiele spacji na jedną
+  const clean = s.replace(/\s+/g, " ");
+  // Title Case (proste)
+  return clean.replace(/\b([a-z])/g, (m) => m.toUpperCase());
+}
+
    function getPrefix(locationCode) {
   const loc = (locationCode || "").toString().toUpperCase().trim();
   const m = loc.match(/^[A-Z]+/);
@@ -1401,16 +1435,22 @@ const topbar = document.createElement("div");
 topbar.className = "location-topbar";
 
 const left = document.createElement("div");
-left.innerHTML = `<span style="font-weight:600;color:#666;font-size:0.9rem;">Contents</span>`;
+left.className = "location-label";
+left.textContent = "Location";
 
+const badge = document.createElement("div");
+badge.className = "location-badge";
 
-const right = document.createElement("div");
-right.className = "location-code";
-right.textContent = loc;
+const codeEl = document.createElement("div");
+codeEl.className = "location-code";
+codeEl.textContent = loc;
+
+badge.appendChild(codeEl);
 
 topbar.appendChild(left);
-topbar.appendChild(right);
+topbar.appendChild(badge);
 groupDiv.appendChild(topbar);
+
 
 
 
@@ -1422,7 +1462,8 @@ groupDiv.appendChild(topbar);
   groups[loc].forEach(item => {
     const itemDiv = document.createElement("div");
     itemDiv.className = "result-item";
-    itemDiv.innerHTML = `<div class="item-name">${item.name}</div>`;
+    itemDiv.innerHTML = `<div class="item-name">${prettyTitle(item.name)}</div>`;
+
     itemsDiv.appendChild(itemDiv);
   });
 
@@ -1530,6 +1571,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
