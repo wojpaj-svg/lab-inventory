@@ -175,22 +175,21 @@ details.map-details summary::-webkit-details-marker{
 }
 /* ===== LOCATION HEADER (clean + readable) ===== */
 .location-group{
-  margin-bottom: 18px;
-  padding: 10px 12px;
-  border: 1px solid #eee;
-  border-radius: 12px;
-  background: #fcfcfc;
+  border: none;              /* ❌ usuń ramkę */
+  padding: 8px 0 14px;       /* ✔ zostaw odstęp */
 }
+
 
 .location-topbar{
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin: 0 0 10px 0;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #e6e6e6;  /* mniej agresywne niż 2px */
+  margin: 10px 0 6px 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #e6e6e6; /* neutralny separator */
 }
+
 
 .location-label{
   font-size: 0.85rem;
@@ -1590,6 +1589,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
