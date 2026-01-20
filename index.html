@@ -153,13 +153,10 @@ details.map-details{
 details.map-details summary{
   cursor: pointer;
   user-select: none;
-  color: #666;
-  font-weight: 600;
-  font-size: 0.85rem;
-  font-style: italic;
+  color: #0b8a2e;
+  font-weight: 700;
   list-style: none;
 }
-
 
 details.map-details summary::-webkit-details-marker{
   display: none;
@@ -248,31 +245,25 @@ details.location-details{
 details.location-details summary{
   cursor: pointer;
   user-select: none;
-  color: #666;            /* mniej zielonego */
+  color: #0b8a2e;
   font-weight: 600;
-  font-size: 0.85rem;     /* jak filter title */
-  font-style: italic;     /* "secondary action" */
+  font-size: 0.9rem;
   list-style: none;
 }
 
-
 details.location-details summary:hover{
-  color: #0b8a2e;
+  opacity: 1;
   text-decoration: underline;
 }
-
     
 /* ikonka dla toggle (chevron) */
 details.location-details summary::before{
   content: "▸ ";
-  color: #666;
+  color: #0b8a2e;
 }
 
 details.location-details[open] summary::before{
   content: "▾ ";
-}
-details.location-details summary:hover::before{
-  color: #0b8a2e;
 }
 
     
@@ -1676,7 +1667,6 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
-
 
 
 
