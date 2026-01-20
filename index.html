@@ -112,6 +112,12 @@ gap: 6px;
   color: #0b8a2e;
   border-radius: 999px;
   padding: 6px 10px;
+    display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  gap: 6px;
+
   font-size: 0.85rem;
   cursor: pointer;
   user-select: none;
@@ -379,6 +385,14 @@ details.legend-details[open] summary.legend-summary{
     /* Legend badges use chip style */
 .legend-chip { cursor: default; }
 .legend-grid .chip { margin: 0; } /* czysto, bez “dziwnych” przesunięć */
+
+    /* Legend chips = jak badge "location-code" (spójnie) */
+.legend .chip{
+  background: #e9f6ee;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
 
     
   </style>
@@ -1608,6 +1622,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
