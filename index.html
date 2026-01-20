@@ -314,16 +314,7 @@ details.location-details[open] summary::before{
   gap: 10px;
 }
 
-.legend-code{
-  border: 1px solid #0b8a2e;
-  background: #fff;
-  color: #0b8a2e;
-  border-radius: 999px;
-  padding: 6px 10px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
+
 
 
 .legend-text{
@@ -381,6 +372,14 @@ details.legend-details[open] summary.legend-summary{
   font-weight: 600;
 }
 
+    /* Hide chips section until we have results */
+#chipsTitle { display: none; }
+#chips { display: none; }
+
+    /* Legend badges use chip style */
+.legend-chip { cursor: default; }
+.legend-grid .chip { margin: 0; } /* czysto, bez “dziwnych” przesunięć */
+
     
   </style>
 </head>
@@ -392,35 +391,26 @@ details.legend-details[open] summary.legend-summary{
  <main>
 
    <details class="legend-details">
-    <summary class="legend-summary">
-      <span class="legend-label">Legend</span>
-      <span class="legend-hint">click to expand</span>
-    </summary>
+  <summary class="legend-summary">
+    <span class="legend-label">Legend</span>
+    <span class="legend-hint">click to expand</span>
+  </summary>
 
-   <div class="legend-grid">
-  <!-- rząd 1 -->
-  <div class="legend-item"><span class="legend-code">ML</span><span class="legend-text">main lab</span></div>
-  <div class="legend-item"><span class="legend-code">IL</span><span class="legend-text">island left side</span></div>
-
-  <!-- rząd 2 -->
-  <div class="legend-item"><span class="legend-code">SL</span><span class="legend-text">small lab</span></div>
-  <div class="legend-item"><span class="legend-code">IR</span><span class="legend-text">island right side</span></div>
-
-  <!-- rząd 3 -->
-  <div class="legend-item"><span class="legend-code">HH</span><span class="legend-text">human health lab</span></div>
-  <div class="legend-item"><span class="legend-code">C</span><span class="legend-text">cabinet</span></div>
-
-  <!-- rząd 4 -->
-  <div class="legend-item"><span class="legend-code">GC</span><span class="legend-text">glass cabinet</span></div>
-  <div class="legend-item"><span class="legend-code">S</span><span class="legend-text">shelf</span></div>
-
-  <!-- rząd 5 (D jako dodatkowe) -->
-  <div class="legend-item"><span class="legend-code">D</span><span class="legend-text">drawer</span></div>
-  <div class="legend-item"></div>
-</div>
-
+  <div class="legend">
+    <div class="legend-grid">
+      <div class="legend-item"><span class="chip legend-chip">ML</span><span class="legend-text">main lab</span></div>
+      <div class="legend-item"><span class="chip legend-chip">IL</span><span class="legend-text">island left side</span></div>
+      <div class="legend-item"><span class="chip legend-chip">SL</span><span class="legend-text">small lab</span></div>
+      <div class="legend-item"><span class="chip legend-chip">IR</span><span class="legend-text">island right side</span></div>
+      <div class="legend-item"><span class="chip legend-chip">HH</span><span class="legend-text">human health lab</span></div>
+      <div class="legend-item"><span class="chip legend-chip">C</span><span class="legend-text">cabinet</span></div>
+      <div class="legend-item"><span class="chip legend-chip">GC</span><span class="legend-text">glass cabinet</span></div>
+      <div class="legend-item"><span class="chip legend-chip">S</span><span class="legend-text">shelf</span></div>
+      <div class="legend-item"><span class="chip legend-chip">D</span><span class="legend-text">drawer</span></div>
     </div>
-  </details>
+  </div>
+</details>
+
 
 
 
@@ -1428,14 +1418,15 @@ function getMapForLocation(loc){
      if (!q) {
   activePrefix = ""; // reset
   chipsDiv.innerHTML = "";
-       chipsTitle.style.display = "none";
+  chipsTitle.style.display = "none";
+  chipsDiv.style.display = "none";
 
   resultsDiv.innerHTML =
     '<div class="no-results">Start typing to search…</div>';
-       chipsTitle.style.display = "none";
 
   return;
 }
+
 
 
       let matches = data.filter(item =>
@@ -1449,16 +1440,20 @@ if (activePrefix) {
 }
 
 
-     if (matches.length === 0) {
+    if (matches.length === 0) {
   chipsDiv.innerHTML = "";
+  chipsTitle.style.display = "none";
+  chipsDiv.style.display = "none";
+
   resultsDiv.innerHTML =
     '<div class="no-results">No items found for this query.</div>';
-       chipsTitle.style.display = "none";
 
   return;
 }
+
 renderChips(matches);
-      chipsTitle.style.display = "block";
+chipsTitle.style.display = "block";
+chipsDiv.style.display = "flex";
 
 
 
@@ -1613,6 +1608,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
