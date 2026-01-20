@@ -331,13 +331,7 @@ details.location-details[open] summary::before{
   min-width: 0;
 }
 
-/* Kolumna na badge w legendzie dopasowana pod .legend-code */
-.legend-item{
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: 5px;
-}
+
 
 
 
@@ -357,26 +351,23 @@ details.location-details[open] summary::before{
 
 .legend-item{
   display: grid;
-  grid-template-columns: 48px 1fr; /* 48px = stała szerokość kapsułki */
+  grid-template-columns: 48px 1fr; /* stała szerokość kapsułki */
   align-items: center;
-  gap: 10px;
-  min-width: 0; /* ważne dla ellipsis */
+  gap: 5px;                        /* ⬅ MNIEJSZY odstęp */
+  min-width: 0;
 }
-
-
-
-
 
 .legend-text{
   color: #333;
-  font-size: 0.85rem;        /* troszkę mniejsze, żeby się mieściło */
-  line-height: 1.2;
-  white-space: nowrap;       /* NIE łam */
-  overflow: hidden;          /* ukryj nadmiar */
-  text-overflow: ellipsis;   /* ... */
+  font-size: 0.7rem;               /* ⬅ MNIEJSZA czcionka opisu */
+  line-height: 1.15;               /* ⬅ ciaśniej */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   text-align: left;
-  min-width: 0;              /* ważne przy grid */
+  min-width: 0;
 }
+
 
 
 /* ===== COLLAPSIBLE LEGEND ===== */
@@ -1675,6 +1666,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
