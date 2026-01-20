@@ -1322,7 +1322,9 @@ details.legend-details[open] summary.legend-summary{
     const chipsDiv = document.getElementById("chips");
     const chipsTitle = document.getElementById("chipsTitle");
 
-let activePrefix = ""; // np. "GCLS", "IRD", "ILC" (puste = ALL)
+    
+let activeGroup = ""; // np. "GCR", "GCL", "IR", "IL", "ML", "SLUC", "SL", "HH" (puste = ALL)
+
 
 
     function normalize(text) {
@@ -1354,6 +1356,29 @@ function getBaseLoc(code){
   return cleanLoc(code).replace(/S\d+$/i, "");
 }
 
+    function getGroupKey(locationCode){
+  const L = cleanLoc(locationCode); // np. "HHC1S1", "GCLS5", "MLD16"
+  if (!L) return "";
+
+  if (L.startsWith("GCRS")) return "GCR";
+  if (L.startsWith("GCLS")) return "GCL";
+
+  if (L.startsWith("IRD") || L.startsWith("IRC")) return "IR";
+  if (L.startsWith("ILD") || L.startsWith("ILC")) return "IL";
+
+  if (L.startsWith("MLD") || L.startsWith("MLC") || L.startsWith("MDL")) return "ML"; 
+  // ↑ MDL masz w danych (np. MDL20), więc wrzucam do ML (jeśli to ma być osobno, powiedz)
+
+  if (L.startsWith("SLUC")) return "SLUC";
+  if (L.startsWith("SLC") || L.startsWith("SLD")) return "SL";
+
+  if (L.startsWith("HHC") || L.startsWith("HHD")) return "HH";
+
+  return "Other";
+}
+
+
+    
 /* ===== FORMATOWANIE NAZW ITEMÓW (UI ONLY) ===== */
 function formatItemName(name){
   if (!name) return "";
@@ -1367,44 +1392,56 @@ function formatItemName(name){
 }
 
 
+const CHIP_ORDER = ["GCR","GCL","IR","IL","ML","SLUC","SL","HH"]; // stała kolejność (bardziej "pro")
+
 function renderChips(matches) {
   chipsDiv.innerHTML = "";
-
   if (!matches || matches.length === 0) return;
 
-  // zlicz prefiksy
+  // zlicz grupy (GCR/GCL/IR/...)
   const counts = {};
   matches.forEach(item => {
-    const p = getPrefix(item.location);
-    if (!p) return;
-    counts[p] = (counts[p] || 0) + 1;
+    const g = getGroupKey(item.location);
+    if (!g) return;
+    counts[g] = (counts[g] || 0) + 1;
   });
-
-  // zrób listę posortowaną malejąco po liczbie
-  const entries = Object.entries(counts).sort((a,b) => b[1] - a[1]);
 
   // ALL chip
   const allChip = document.createElement("div");
-  allChip.className = "chip" + (activePrefix === "" ? " active" : "");
+  allChip.className = "chip" + (activeGroup === "" ? " active" : "");
   allChip.textContent = "All";
   allChip.addEventListener("click", () => {
-    activePrefix = "";
-    search(); // przerysuj
+    activeGroup = "";
+    search();
   });
   chipsDiv.appendChild(allChip);
 
-  // prefix chips
-  entries.forEach(([p, n]) => {
+  // grupy w ustalonej kolejności
+  CHIP_ORDER.forEach(g => {
+    if (!counts[g]) return;
     const chip = document.createElement("div");
-    chip.className = "chip" + (activePrefix === p ? " active" : "");
-    chip.textContent = `${p} (${n})`;
+    chip.className = "chip" + (activeGroup === g ? " active" : "");
+    chip.textContent = `${g} (${counts[g]})`;
     chip.addEventListener("click", () => {
-      activePrefix = p;
+      activeGroup = g;
       search();
     });
     chipsDiv.appendChild(chip);
   });
+
+  // (opcjonalnie) "Other", jeśli kiedyś się pojawi
+  if (counts["Other"]) {
+    const chip = document.createElement("div");
+    chip.className = "chip" + (activeGroup === "Other" ? " active" : "");
+    chip.textContent = `Other (${counts["Other"]})`;
+    chip.addEventListener("click", () => {
+      activeGroup = "Other";
+      search();
+    });
+    chipsDiv.appendChild(chip);
+  }
 }
+
 
 function getMapForLocation(loc){
   const L = cleanLoc(loc); // np. "HHC1S1" albo "GCLS5"
@@ -1492,17 +1529,18 @@ function getMapForLocation(loc){
       const q = normalize(searchInput.value);
       resultsDiv.innerHTML = "";
 
-     if (!q) {
-  activePrefix = ""; // reset
+    if (!q) {
+  activeGroup = ""; // reset
   chipsDiv.innerHTML = "";
   chipsTitle.style.display = "none";
   chipsDiv.style.display = "none";
 
   resultsDiv.innerHTML =
-    '<div class="no-results">Start typing to search…</div>';
+    '<div class="no-results"><em>Start typing to search…</em></div>';
 
   return;
 }
+
 
 
 
@@ -1511,10 +1549,12 @@ function getMapForLocation(loc){
   normalize(item.location).includes(q)
 );
 
-// jeśli wybrany chip (prefiks), przefiltruj
-if (activePrefix) {
-  matches = matches.filter(item => getPrefix(item.location) === activePrefix);
+
+// jeśli wybrany chip (grupa), przefiltruj
+if (activeGroup) {
+  matches = matches.filter(item => getGroupKey(item.location) === activeGroup);
 }
+
 
 
     if (matches.length === 0) {
@@ -1685,6 +1725,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
