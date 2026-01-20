@@ -195,8 +195,9 @@ details.map-details summary::-webkit-details-marker{
 .location-label{
   font-size: 0.85rem;
   font-weight: 600;
-  color: #666;
+  color: #0b8a2e;   /* zielony */
 }
+
 
 .location-code{
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -385,17 +386,28 @@ details.legend-details[open] summary.legend-summary{
       <span class="legend-hint">click to expand</span>
     </summary>
 
-    <div class="legend">
-      <div class="legend-grid">
-        <div class="legend-item"><span class="legend-code">GC</span><span class="legend-text">glass cabinet</span></div>
-        <div class="legend-item"><span class="legend-code">S</span><span class="legend-text">shelf</span></div>
-        <div class="legend-item"><span class="legend-code">C</span><span class="legend-text">cabinet</span></div>
-        <div class="legend-item"><span class="legend-code">IR</span><span class="legend-text">island right side</span></div>
-        <div class="legend-item"><span class="legend-code">IL</span><span class="legend-text">island left side</span></div>
-        <div class="legend-item"><span class="legend-code">ML</span><span class="legend-text">main lab</span></div>
-        <div class="legend-item"><span class="legend-code">SL</span><span class="legend-text">small lab</span></div>
-        <div class="legend-item"><span class="legend-code">HH</span><span class="legend-text">human health lab</span></div>
-      </div>
+   <div class="legend-grid">
+  <!-- rząd 1 -->
+  <div class="legend-item"><span class="legend-code">ML</span><span class="legend-text">main lab</span></div>
+  <div class="legend-item"><span class="legend-code">IL</span><span class="legend-text">island left side</span></div>
+
+  <!-- rząd 2 -->
+  <div class="legend-item"><span class="legend-code">SL</span><span class="legend-text">small lab</span></div>
+  <div class="legend-item"><span class="legend-code">IR</span><span class="legend-text">island right side</span></div>
+
+  <!-- rząd 3 -->
+  <div class="legend-item"><span class="legend-code">HH</span><span class="legend-text">human health lab</span></div>
+  <div class="legend-item"><span class="legend-code">C</span><span class="legend-text">cabinet</span></div>
+
+  <!-- rząd 4 -->
+  <div class="legend-item"><span class="legend-code">GC</span><span class="legend-text">glass cabinet</span></div>
+  <div class="legend-item"><span class="legend-code">S</span><span class="legend-text">shelf</span></div>
+
+  <!-- rząd 5 (D jako dodatkowe) -->
+  <div class="legend-item"><span class="legend-code">D</span><span class="legend-text">drawer</span></div>
+  <div class="legend-item"></div>
+</div>
+
     </div>
   </details>
 
@@ -1578,6 +1590,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
