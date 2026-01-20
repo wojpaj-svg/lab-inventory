@@ -56,8 +56,8 @@
     .result-item {
       border: 1px solid #ddd;
       border-radius: 8px;
-      padding: 10px 14px;
-      margin-bottom: 10px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
 
@@ -217,10 +217,16 @@ details.location-details summary{
   user-select: none;
   color: #0b8a2e;
   font-weight: 600;
+  opacity: 0.9;
    color: #0b8a2e;
   font-size: 0.9rem;
   list-style: none;
 }
+details.location-details summary:hover{
+  opacity: 1;
+  text-decoration: underline;
+}
+    
 /* ikonka dla toggle (chevron) */
 details.location-details summary::before{
   content: "▸ ";
@@ -333,6 +339,12 @@ details.legend-details[open] summary.legend-summary{
   margin-bottom: 6px;
 }
 
+/* ===== De-emphasize "Contents" label ===== */
+.location-topbar span{
+  font-weight: 500 !important;
+  color: #777 !important;
+  font-size: 0.85rem !important;
+}
 
 
     
@@ -1518,6 +1530,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
