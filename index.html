@@ -297,9 +297,16 @@ details.location-details[open] summary::before{
 
 .legend-grid{
   display: grid;
-  grid-template-columns: 1fr 1fr; /* 2 kolumny na telefonie i desktopie */
+  grid-template-columns: repeat(3, 1fr); /* 3 kolumny */
   gap: 8px 14px;
 }
+
+@media (max-width: 420px){
+  .legend-grid{
+    grid-template-columns: repeat(2, 1fr); /* na bardzo małych ekranach 2 kolumny */
+  }
+}
+
 
 .legend-item{
   display: flex;
@@ -308,20 +315,16 @@ details.location-details[open] summary::before{
 }
 
 .legend-code{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 34px;
-  height: 24px;
-  padding: 0 8px;
-  border-radius: 999px;
-  border: 1px solid rgba(11,138,46,0.35);
-  background: rgba(11,138,46,0.08);
+  border: 1px solid #0b8a2e;
+  background: #fff;
   color: #0b8a2e;
-  font-weight: 800;
+  border-radius: 999px;
+  padding: 6px 10px;
   font-size: 0.85rem;
+  font-weight: 700;
   letter-spacing: 0.02em;
 }
+
 
 .legend-text{
   color: #333;
@@ -369,6 +372,14 @@ details.legend-details[open] summary.legend-summary{
   font-size: 0.85rem !important;
 }
 
+.chips-title{
+  margin-top: 16px;
+  margin-bottom: 6px;
+  text-align: left;
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 600;
+}
 
     
   </style>
@@ -423,9 +434,11 @@ details.legend-details[open] summary.legend-summary{
     />
   </div>
 
+<div id="chipsTitle" class="chips-title">Filter by location</div>
+<div id="chips" class="chips"></div>
 
-    <div id="chips" class="chips"></div>
 <div id="results" class="results"></div>
+
 
     <footer>• Developed with Viviana • Designed by WP •</footer>
   </main>
@@ -1240,6 +1253,8 @@ details.legend-details[open] summary.legend-summary{
     const searchInput = document.getElementById("search");
     const resultsDiv  = document.getElementById("results");
     const chipsDiv = document.getElementById("chips");
+    const chipsTitle = document.getElementById("chipsTitle");
+
 let activePrefix = ""; // np. "GCLS", "IRD", "ILC" (puste = ALL)
 
 
@@ -1413,8 +1428,12 @@ function getMapForLocation(loc){
      if (!q) {
   activePrefix = ""; // reset
   chipsDiv.innerHTML = "";
+       chipsTitle.style.display = "none";
+
   resultsDiv.innerHTML =
     '<div class="no-results">Start typing to search…</div>';
+       chipsTitle.style.display = "none";
+
   return;
 }
 
@@ -1434,9 +1453,13 @@ if (activePrefix) {
   chipsDiv.innerHTML = "";
   resultsDiv.innerHTML =
     '<div class="no-results">No items found for this query.</div>';
+       chipsTitle.style.display = "none";
+
   return;
 }
 renderChips(matches);
+      chipsTitle.style.display = "block";
+
 
 
    // ===== GROUP + PHOTO PER LOCATION =====
@@ -1590,6 +1613,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
