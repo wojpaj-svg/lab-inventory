@@ -433,6 +433,48 @@ details.legend-details[open] summary.legend-summary{
 }
 
 
+    /* prawa kolumna w topbarze (kod + linki) */
+.location-right{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:6px;
+}
+
+/* linki/akcje pod kodem */
+.location-links{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:4px;
+  margin-top:2px;
+}
+
+/* “Show…” ma być lżejsze */
+.location-links summary{
+  cursor:pointer;
+  user-select:none;
+  color:#0b8a2e;
+  font-size:0.82rem;
+  font-weight:600;
+  font-style:italic;
+  list-style:none;
+  text-decoration:none;
+}
+
+.location-links summary::-webkit-details-marker{ display:none; }
+.location-links summary:hover{ text-decoration:underline; }
+
+.location-links summary::before{
+  content:"▸ ";
+  color:#0b8a2e;
+}
+
+.location-links details[open] summary::before{
+  content:"▾ ";
+}
+
+
     
   </style>
 </head>
@@ -1524,26 +1566,30 @@ matches.forEach(item => {
   groups[loc].push(item);
 });
 
-// sort lokacji alfabetycznie
-Object.keys(groups).sort().forEach(loc => {
-  const groupDiv = document.createElement("div");
-  groupDiv.className = "location-group";
+  // TOPBAR: lewo = "Location", prawo = kod + link "Show..."
+  const topbar = document.createElement("div");
+  topbar.className = "location-topbar";
 
- // TOPBAR: po lewej label, po prawej duży kod + Copy
-const topbar = document.createElement("div");
-topbar.className = "location-topbar";
+  const left = document.createElement("div");
+  left.className = "location-label";
+  left.textContent = "Location";
 
-const left = document.createElement("div");
-left.className = "location-label";
-left.textContent = "Location";
+  const right = document.createElement("div");
+  right.className = "location-right";
 
-const codeEl = document.createElement("div");
-codeEl.className = "location-code";
-codeEl.textContent = loc;
+  const codeEl = document.createElement("div");
+  codeEl.className = "location-code";
+  codeEl.textContent = loc;
 
-topbar.appendChild(left);
-topbar.appendChild(codeEl);
-groupDiv.appendChild(topbar);
+  const links = document.createElement("div");
+  links.className = "location-links";
+
+  topbar.appendChild(left);
+  right.appendChild(codeEl);
+  right.appendChild(links);
+  topbar.appendChild(right);
+  groupDiv.appendChild(topbar);
+
 
 
 
@@ -1574,6 +1620,10 @@ details.appendChild(summary);
 
 const detailsGrid = document.createElement("div");
 detailsGrid.className = "details-grid";
+
+links.appendChild(details);
+
+      
 
 // zdjęcie szuflady/lokacji
 const img = document.createElement("img");
@@ -1651,7 +1701,6 @@ mapDetails.appendChild(mapCaption);
 
 details.appendChild(detailsGrid);
 groupDiv.appendChild(itemsDiv);
-groupDiv.appendChild(details);
 resultsDiv.appendChild(groupDiv);
 
 });
@@ -1667,6 +1716,7 @@ resultsDiv.appendChild(groupDiv);
   </script>
 </body>
 </html>
+
 
 
 
