@@ -309,7 +309,20 @@ details.location-details summary{
   font-weight: 600;
   font-size: 0.78rem;
   list-style: none;
+
+  display: flex;                 /* NEW */
+  align-items: center;            /* NEW */
+  justify-content: space-between; /* NEW */
+  gap: 10px;                      /* NEW */
 }
+
+/* NEW: prawy kontener na S1/S2 */
+.summary-right{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 
 details.location-details summary:hover{
   opacity: 1;
@@ -1852,7 +1865,14 @@ const codeEl = document.createElement("div");
 codeEl.className = "location-code";
 
 const locChips = parseLocChips(loc);
-codeEl.innerHTML = locChips.map(c => `<span class="loc-chip">${c}</span>`).join("");
+
+// wyciągnij S1/S2 jeśli istnieje
+const shelfChip = locChips.find(c => /^S\d+$/i.test(c)) || "";
+
+// do topbara wrzucamy wszystko OPRÓCZ S1/S2
+const topbarChips = locChips.filter(c => !/^S\d+$/i.test(c));
+
+codeEl.innerHTML = topbarChips.map(c => `<span class="loc-chip">${c}</span>`).join("");
 
 
 topbar.appendChild(left);
@@ -1900,9 +1920,27 @@ details.className = "location-details";
 
 
 const summary = document.createElement("summary");
-summary.textContent = "Show photos & lab map";
+
+// lewa część (tekst)
+const summaryLeft = document.createElement("span");
+summaryLeft.textContent = "Show photos & lab map";
+
+// prawa część (S1/S2)
+const summaryRight = document.createElement("span");
+summaryRight.className = "summary-right";
+
+if (shelfChip){
+  const s = document.createElement("span");
+  s.className = "loc-chip";
+  s.textContent = shelfChip;
+  summaryRight.appendChild(s);
+}
+
+summary.appendChild(summaryLeft);
+summary.appendChild(summaryRight);
 
 details.appendChild(summary);
+
 
 const detailsGrid = document.createElement("div");
 detailsGrid.className = "details-grid";
@@ -2022,6 +2060,7 @@ document.addEventListener("click", (e) => {
   
 </body>
 </html>
+
 
 
 
