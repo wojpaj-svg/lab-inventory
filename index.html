@@ -1553,7 +1553,7 @@ function getGroupKey(locationCode){
   if (!L) return "";
 
   // Specjalny filtr: glass cabinet
-  if (L.includes("GCR") || L.includes("GCL")) return "GC";
+  if (L.includes("GCR") || L.includes("GCL")) return "ML-GC";
 
   // LAB+ZONE na podstawie prefiksu
   if (L.startsWith("MLWL")) return "ML-WL";
@@ -1622,7 +1622,8 @@ async function loadImageWithCache(imgEl){
 
     
 
-const CHIP_ORDER = ["ML-WL","ML-IR","ML-IL","SL-UP","SL-WL","HH-WL","ML-GC"];
+const CHIP_ORDER = ["ML-GC","ML-WL","ML-IR","ML-IL","SL-UP","SL-WL","HH-WL"];
+
 
 
 function renderChips(matches) {
@@ -1959,6 +1960,7 @@ document.addEventListener("click", (e) => {
   
 </body>
 </html>
+
 
 
 
