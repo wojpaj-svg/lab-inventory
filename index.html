@@ -267,25 +267,27 @@ details.map-details summary::-webkit-details-marker{
 }
 
 /* baza chipów lokacji – styl jak legend (czytelny, lekki) */
+/* baza chipów lokacji – styl jak na "ładnym" screenie */
 .loc-chip{
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  background: #e9f6ee;
+  font-family: inherit;         /* ⬅ usuń monospace */
+  background: #fff;             /* ⬅ białe tło */
   color: #0b8a2e;
-  border: 1px solid #0b8a2e;
+  border: 1.5px solid #0b8a2e;  /* ⬅ trochę wyraźniejsza ramka */
   border-radius: 999px;
 
-  height: 22px;                 /* ⬅ stała wysokość */
+  height: 26px;                 /* ⬅ bardziej "pill" jak na screenie */
   display: inline-flex;
   align-items: center;
   justify-content: center;
 
-  padding: 0 8px;
-  font-weight: 700;
+  padding: 0 12px;              /* ⬅ więcej oddechu */
+  font-weight: 600;             /* ⬅ mniej agresywne niż 700 */
   font-size: 0.85rem;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
   line-height: 1;
   box-sizing: border-box;
 }
+
 
 /* RÓWNE szerokości per poziom */
 .loc-lab  { width: 34px; }      /* ML / SL / HH */
@@ -2058,6 +2060,7 @@ document.addEventListener("click", (e) => {
   
 </body>
 </html>
+
 
 
 
