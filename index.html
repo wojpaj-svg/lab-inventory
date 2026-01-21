@@ -546,7 +546,35 @@ details.legend-details[open] summary.legend-summary{
 }
 
     
+/* FORCE: location chips wyglądają jak filter chips */
+.loc-chip{
+  border: 1px solid #0b8a2e !important;
+  background: #fff !important;
+  color: #0b8a2e !important;
+  border-radius: 999px !important;
+  padding: 6px 10px !important;
 
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  line-height: 1 !important;
+  gap: 6px !important;
+
+  font-size: 0.85rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  height: auto !important;
+  width: auto !important;
+  font-family: inherit !important;
+}
+
+.loc-lab, .loc-zone, .loc-code, .loc-shelf{
+  width: auto !important;
+}
+
+
+    
     
   </style>
 </head>
@@ -2062,6 +2090,7 @@ document.addEventListener("click", (e) => {
   
 </body>
 </html>
+
 
 
 
