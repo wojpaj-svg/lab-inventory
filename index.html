@@ -95,6 +95,31 @@
   border-bottom: none;     /* mniej "nagłówkowo" */
   padding-bottom: 0;
 }
+
+.item-row{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.item-shelf{
+  flex: 0 0 auto;
+  /* dokładnie ten sam styl co loc-chip/legend */
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  background: #e9f6ee;
+  color: #0b8a2e;
+  border: 1px solid #0b8a2e;
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+
+    
 /* highlight dopasowania w nazwach */
 .hl{
   background: #fff3bf;      /* delikatny żółty */
@@ -1852,7 +1877,11 @@ const codeEl = document.createElement("div");
 codeEl.className = "location-code";
 
 const locChips = parseLocChips(loc);
-codeEl.innerHTML = locChips.map(c => `<span class="loc-chip">${c}</span>`).join("");
+const shelfChip = locChips.find(c => /^S\d+$/i.test(c)) || "";
+const topbarChips = locChips.filter(c => !/^S\d+$/i.test(c));
+
+codeEl.innerHTML = topbarChips.map(c => `<span class="loc-chip">${c}</span>`).join("");
+
 
 
 topbar.appendChild(left);
@@ -1874,7 +1903,15 @@ groupDiv.appendChild(topbar);
     const itemDiv = document.createElement("div");
     itemDiv.className = "result-item";
     const shownName = formatItemName(item.name);
-itemDiv.innerHTML = `<div class="item-name">${highlightText(shownName, searchInput.value)}</div>`;
+const nameHtml = highlightText(shownName, searchInput.value);
+
+itemDiv.innerHTML = `
+  <div class="item-row">
+    <div class="item-name">${nameHtml}</div>
+    ${shelfChip ? `<span class="item-shelf">${shelfChip.toUpperCase()}</span>` : ``}
+  </div>
+`;
+
 
 
 
@@ -2022,6 +2059,7 @@ document.addEventListener("click", (e) => {
   
 </body>
 </html>
+
 
 
 
