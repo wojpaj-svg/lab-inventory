@@ -250,10 +250,15 @@ details.map-details summary::-webkit-details-marker{
 
     
 .location-code{
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  letter-spacing: 0.03em;   /* 🔑 dużo ciaśniej */
+  background: #e9f6ee;      /* delikatny zielony */
+  color: #0b8a2e;
+  border: 1px solid #0b8a2e;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.9rem;
 }
 
 .loc-chip{
@@ -2014,6 +2019,7 @@ document.addEventListener("click", (e) => {
   
 </body>
 </html>
+
 
 
 
