@@ -252,7 +252,7 @@ details.map-details summary::-webkit-details-marker{
 /* chips w topbar: 1 linia (bez zawijania) */
 .location-code{
   display: flex;
-  gap: 6px;
+  gap: 8px;
   justify-content: flex-end;
   flex-wrap: nowrap;     /* ⬅ nie zawijaj w topbar */
   align-items: center;
@@ -268,23 +268,25 @@ details.map-details summary::-webkit-details-marker{
 
 /* baza chipów lokacji – styl jak legend (czytelny, lekki) */
 /* baza chipów lokacji – styl jak na "ładnym" screenie */
+/* LOCATION chips (HH/WL/CB1/S1) — ma wyglądać tak samo jak .chip */
 .loc-chip{
-  font-family: inherit;         /* ⬅ usuń monospace */
-  background: #fff;             /* ⬅ białe tło */
+  border: 1px solid #0b8a2e;
+  background: #fff;
   color: #0b8a2e;
-  border: 1.5px solid #0b8a2e;  /* ⬅ trochę wyraźniejsza ramka */
   border-radius: 999px;
+  padding: 6px 10px;
 
-  height: 26px;                 /* ⬅ bardziej "pill" jak na screenie */
   display: inline-flex;
   align-items: center;
   justify-content: center;
 
-  padding: 0 12px;              /* ⬅ więcej oddechu */
-  font-weight: 600;             /* ⬅ mniej agresywne niż 700 */
-  font-size: 0.85rem;
-  letter-spacing: 0.01em;
   line-height: 1;
+  gap: 6px;
+
+  font-size: 0.85rem;
+  font-weight: 400;      /* ważne: nie 700 */
+  letter-spacing: 0;     /* ważne: nie monospace-look */
+  height: auto;          /* ważne: nie stała wysokość */
   box-sizing: border-box;
 }
 
@@ -2060,6 +2062,7 @@ document.addEventListener("click", (e) => {
   
 </body>
 </html>
+
 
 
 
