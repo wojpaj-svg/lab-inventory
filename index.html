@@ -1548,26 +1548,26 @@ function getBaseLoc(code){
   return cleanLoc(code).replace(/S\d+$/i, "");
 }
 
-    function getGroupKey(locationCode){
-  const L = cleanLoc(locationCode); // np. "HHC1S1", "GCLS5", "MLD16"
+function getGroupKey(locationCode){
+  const L = cleanLoc(locationCode);
   if (!L) return "";
 
-  if (L.startsWith("GCRS")) return "GCR";
-  if (L.startsWith("GCLS")) return "GCL";
+  // Specjalny filtr: glass cabinet
+  if (L.includes("GCR") || L.includes("GCL")) return "GC";
 
-  if (L.startsWith("IRD") || L.startsWith("IRC")) return "IR";
-  if (L.startsWith("ILD") || L.startsWith("ILC")) return "IL";
+  // LAB+ZONE na podstawie prefiksu
+  if (L.startsWith("MLWL")) return "ML-WL";
+  if (L.startsWith("MLIR")) return "ML-IR";
+  if (L.startsWith("MLIL")) return "ML-IL";
 
-  if (L.startsWith("MLD") || L.startsWith("MLC") || L.startsWith("MDL")) return "ML"; 
-  // ↑ MDL masz w danych (np. MDL20), więc wrzucam do ML (jeśli to ma być osobno, powiedz)
+  if (L.startsWith("SLUP")) return "SL-UP";
+  if (L.startsWith("SLWL")) return "SL-WL";
 
-  if (L.startsWith("SLUC")) return "SLUC";
-  if (L.startsWith("SLC") || L.startsWith("SLD")) return "SL";
-
-  if (L.startsWith("HHC") || L.startsWith("HHD")) return "HH";
+  if (L.startsWith("HHWL")) return "HH-WL";
 
   return "Other";
 }
+
 
 
     
@@ -1622,7 +1622,8 @@ async function loadImageWithCache(imgEl){
 
     
 
-const CHIP_ORDER = ["GCR","GCL","IR","IL","ML","SLUC","SL","HH"]; // stała kolejność (bardziej "pro")
+const CHIP_ORDER = ["ML-WL","ML-IR","ML-IL","SL-UP","SL-WL","HH-WL","ML-GC"];
+
 
 function renderChips(matches) {
   chipsDiv.innerHTML = "";
@@ -1958,6 +1959,7 @@ document.addEventListener("click", (e) => {
   
 </body>
 </html>
+
 
 
 
