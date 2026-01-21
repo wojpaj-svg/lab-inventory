@@ -1602,7 +1602,7 @@ function getGroupKey(locationCode){
   return "Other";
 }
 
-    function parseLocParts(loc){
+   function parseLocParts(loc){
   const L = cleanLoc(loc);
   if (!L) return { lab:"", zone:"", code:"", shelf:"" };
 
@@ -1640,25 +1640,7 @@ function getGroupKey(locationCode){
 }
 
 
-  // STREFA (krótka, stała)
-  let zone = "WL";
-  if (L.startsWith("MLIR")) zone = "IR";
-  else if (L.startsWith("MLIL")) zone = "IL";
-  else if (L.startsWith("SLUP")) zone = "UP";
-  else if (L.startsWith("SLWL")) zone = "WL";
-  else if (L.startsWith("HHWL")) zone = "WL";
 
-  // KONTENER (DR/CB + numer)
-  const m = L.match(/(DR\d+|CB\d+)/i);
-  let container = m ? m[0].toUpperCase() : "";
-
-  // jeśli jest półka i dotyczy CB -> pokaż jako 4 chip (Sx)
-  if (shelfNum && container.startsWith("CB")){
-    return [lab, zone, container, `S${shelfNum}`];
-  }
-
-  return [lab, zone, container].filter(Boolean);
-}
 
 
 
@@ -2076,6 +2058,7 @@ document.addEventListener("click", (e) => {
   
 </body>
 </html>
+
 
 
 
