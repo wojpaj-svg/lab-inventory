@@ -1796,8 +1796,36 @@ codeEl.className = "location-code";
 codeEl.textContent = loc;
 
 topbar.appendChild(left);
-topbar.appendChild(codeEl);
+
+const rightWrap = document.createElement("div");
+rightWrap.className = "location-actions";
+
+rightWrap.appendChild(codeEl);
+
+const copyBtn = document.createElement("button");
+copyBtn.className = "btn";
+copyBtn.type = "button";
+copyBtn.textContent = "Copy";
+copyBtn.addEventListener("click", async () => {
+  try{
+    await navigator.clipboard.writeText(loc);
+    copyBtn.textContent = "Copied!";
+    setTimeout(()=> copyBtn.textContent = "Copy", 900);
+  }catch(e){
+    // fallback: zaznacz tekst
+    const r = document.createRange();
+    r.selectNodeContents(codeEl);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(r);
+  }
+});
+
+rightWrap.appendChild(copyBtn);
+topbar.appendChild(rightWrap);
+
 groupDiv.appendChild(topbar);
+
 
 
 
@@ -1960,6 +1988,7 @@ document.addEventListener("click", (e) => {
   
 </body>
 </html>
+
 
 
 
