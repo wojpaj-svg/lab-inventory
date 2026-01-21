@@ -249,25 +249,49 @@ details.map-details summary::-webkit-details-marker{
 
 
     
+/* chips w topbar: 1 linia (bez zawijania) */
 .location-code{
   display: flex;
   gap: 6px;
-  flex-wrap: wrap;
   justify-content: flex-end;
+  flex-wrap: nowrap;     /* ⬅ nie zawijaj w topbar */
+  align-items: center;
 }
 
+/* wiersz dla shelf (S1/S2) pod topbarem */
+.location-shelfrow{
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -6px;      /* ⬅ wizualnie "wpada" bliżej topbar */
+  margin-bottom: 8px;    /* ⬅ wygląda jak na wysokości 1. itemu */
+}
+
+/* baza chipów lokacji – styl jak legend (czytelny, lekki) */
 .loc-chip{
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   background: #e9f6ee;
   color: #0b8a2e;
   border: 1px solid #0b8a2e;
   border-radius: 999px;
-  padding: 3px 8px;
+
+  height: 22px;                 /* ⬅ stała wysokość */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 8px;
   font-weight: 700;
   font-size: 0.85rem;
   letter-spacing: 0.02em;
   line-height: 1;
+  box-sizing: border-box;
 }
+
+/* RÓWNE szerokości per poziom */
+.loc-lab  { width: 34px; }      /* ML / SL / HH */
+.loc-zone { width: 34px; }      /* WL / IL / IR / UP / GC */
+.loc-code { width: 52px; }      /* DR10 / CB1 / GCL5 itp. */
+.loc-shelf{ width: 34px; }      /* S1 / S2 / S10 */
 
 
 
@@ -1578,24 +1602,43 @@ function getGroupKey(locationCode){
   return "Other";
 }
 
-    function parseLocChips(loc){
-  const L = cleanLoc(loc);                 // np. MLWLGCLS5, MLIRDR6, SLUPCB5, MLILCB1S2
-  if (!L) return [];
+    function parseLocParts(loc){
+  const L = cleanLoc(loc);
+  if (!L) return { lab:"", zone:"", code:"", shelf:"" };
 
-  // LAB (pierwsze 2 litery)
-  const lab = L.slice(0,2);                // ML / SL / HH
+  const lab = L.slice(0,2); // ML / SL / HH
 
-  // wykryj końcówkę S\d+ (półka)
+  // shelf S\d+ na końcu
   const shelfMatch = L.match(/S(\d+)$/i);
-  const shelfNum = shelfMatch ? shelfMatch[1] : "";   // "5" / "2" / ""
+  const shelf = shelfMatch ? `S${shelfMatch[1]}` : "";
 
-  // GLASS CABINET (MLWL + GCL/GCR + S#) -> 3 chipy: ML | GC | GCL5
+  // GLASS CABINET: MLWLGCL... / MLWLGCR... => lab | GC | GCL5 (bez osobnego shelf)
   if (L.startsWith("MLWLGCL") || L.startsWith("MLWLGCR")){
     const side = L.includes("GCL") ? "GCL" : "GCR";
-    const zone = "GC";
-    const chip3 = shelfNum ? `${side}${shelfNum}` : side;  // GCL5 / GCR2
-    return [lab, zone, chip3];
+    const code = shelfMatch ? `${side}${shelfMatch[1]}` : side;
+    return { lab, zone: "GC", code, shelf: "" };
   }
+
+  // zone
+  let zone = "WL";
+  if (L.startsWith("MLIR")) zone = "IR";
+  else if (L.startsWith("MLIL")) zone = "IL";
+  else if (L.startsWith("SLUP")) zone = "UP";
+  else if (L.startsWith("SLWL")) zone = "WL";
+  else if (L.startsWith("HHWL")) zone = "WL";
+
+  // code DRxx / CBx
+  const m = L.match(/(DR\d+|CB\d+)/i);
+  const code = m ? m[0].toUpperCase() : "";
+
+  // shelf pokazujemy osobno tylko dla CB + Sx
+  if (shelf && code.startsWith("CB")){
+    return { lab, zone, code, shelf };
+  }
+
+  return { lab, zone, code, shelf: "" };
+}
+
 
   // STREFA (krótka, stała)
   let zone = "WL";
@@ -1843,14 +1886,33 @@ left.textContent = "Location";
 const codeEl = document.createElement("div");
 codeEl.className = "location-code";
 
-const locChips = parseLocChips(loc);
-codeEl.innerHTML = locChips.map(c => `<span class="loc-chip">${c}</span>`).join("");
+const parts = parseLocParts(loc);
+
+// topbar: lab / zone / code (bez shelf)
+if (parts.lab){
+  codeEl.innerHTML += `<span class="loc-chip loc-lab">${parts.lab}</span>`;
+}
+if (parts.zone){
+  codeEl.innerHTML += `<span class="loc-chip loc-zone">${parts.zone}</span>`;
+}
+if (parts.code){
+  codeEl.innerHTML += `<span class="loc-chip loc-code">${parts.code}</span>`;
+}
+
 
 
 topbar.appendChild(left);
 topbar.appendChild(codeEl);
 groupDiv.appendChild(topbar);
 
+// shelf pod topbarem (np. S1/S2) – wizualnie przy 1. itemie
+const parts2 = parseLocParts(loc);
+if (parts2.shelf){
+  const shelfRow = document.createElement("div");
+  shelfRow.className = "location-shelfrow";
+  shelfRow.innerHTML = `<span class="loc-chip loc-shelf">${parts2.shelf}</span>`;
+  groupDiv.appendChild(shelfRow);
+}
 
 
 
@@ -2014,6 +2076,7 @@ document.addEventListener("click", (e) => {
   
 </body>
 </html>
+
 
 
 
