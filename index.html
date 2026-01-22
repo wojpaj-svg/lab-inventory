@@ -256,6 +256,13 @@ details.map-details summary::-webkit-details-marker{
   justify-content: flex-end;
 }
 
+    /* wymusza nową linię w flex-wrap (użyjemy przed chipem S#) */
+.location-code .loc-break{
+  flex-basis: 100%;
+  height: 0;
+}
+
+
 .loc-chip{
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   background: #e9f6ee;
@@ -1639,10 +1646,12 @@ function getGroupKey(locationCode){
     out.push({ text: container, anchor: true });
   }
 
-  // półka jako osobny chip tylko dla CB
-  if (shelfNum && container.startsWith("CB")){
-    out.push({ text: `S${shelfNum}`, anchor: false });
-  }
+  
+// półka jako osobny chip tylko dla CB (ma iść w nowej linii)
+if (shelfNum && container.startsWith("CB")){
+  out.push({ text: `S${shelfNum}`, anchor: false, shelf: true });
+}
+
 
   return out;
 }
@@ -1944,10 +1953,12 @@ Object.keys(groups)
     codeEl.className = "location-code";
 
     const locChips = parseLocChips(loc);
-    codeEl.innerHTML = locChips.map(c => {
-      const cls = c.anchor ? "loc-chip anchor" : "loc-chip secondary";
-      return `<span class="${cls}">${c.text}</span>`;
-    }).join("");
+   codeEl.innerHTML = locChips.map(c => {
+  const cls = c.anchor ? "loc-chip anchor" : "loc-chip secondary";
+  const br = c.shelf ? `<span class="loc-break"></span>` : "";
+  return `${br}<span class="${cls}">${c.text}</span>`;
+}).join("");
+
 
     topbar.appendChild(left);
     topbar.appendChild(codeEl);
@@ -2090,6 +2101,7 @@ document.addEventListener("click", (e) => {
   
 </body>
 </html>
+
 
 
 
