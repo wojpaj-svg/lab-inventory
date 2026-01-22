@@ -1450,6 +1450,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const suggestionsDiv = document.getElementById("suggestions");
 
+      function normalize(text) {
+      return text ? text.toString().toLowerCase().trim() : "";
+    }
+
 // --- indeks słów do sugestii (zbudowany raz) ---
 const WORD_FREQ = (() => {
   const freq = new Map();
@@ -1511,9 +1515,7 @@ let activeGroup = ""; // np. "GCR", "GCL", "IR", "IL", "ML", "SLUC", "SL", "HH" 
 
 
 
-    function normalize(text) {
-      return text ? text.toString().toLowerCase().trim() : "";
-    }
+  
 
 function escapeHtml(str){
   return (str ?? "").toString()
@@ -1610,7 +1612,7 @@ function getGroupKey(locationCode){
     const out = [
       { text: lab,  anchor: false },
       { text: "WL", anchor: false },
-      { text: side, anchor: true  },      // <-- KLUCZOWY
+      { text: side, anchor: true  },
     ];
     if (shelfNum) out.push({ text: `S${shelfNum}`, anchor: false });
     return out;
@@ -1634,7 +1636,7 @@ function getGroupKey(locationCode){
   ];
 
   if (container){
-    out.push({ text: container, anchor: true }); // <-- KLUCZOWY
+    out.push({ text: container, anchor: true });
   }
 
   // półka jako osobny chip tylko dla CB
@@ -1647,27 +1649,8 @@ function getGroupKey(locationCode){
 
 
 
-  // STREFA (krótka, stała)
-  let zone = "WL";
-  if (L.startsWith("MLIR")) zone = "IR";
-  else if (L.startsWith("MLIL")) zone = "IL";
-  else if (L.startsWith("SLUP")) zone = "UP";
-  else if (L.startsWith("SLWL")) zone = "WL";
-  else if (L.startsWith("HHWL")) zone = "WL";
 
-  // KONTENER (DR/CB + numer)
-  const m = L.match(/(DR\d+|CB\d+)/i);
-  let container = m ? m[0].toUpperCase() : "";
-
-  // jeśli jest półka i dotyczy CB -> pokaż jako 4 chip (Sx)
-  if (shelfNum && container.startsWith("CB")){
-    return [lab, zone, container, `S${shelfNum}`];
-  }
-
-  return [lab, zone, container].filter(Boolean);
-}
-
-
+ 
 
     
 /* ===== FORMATOWANIE NAZW ITEMÓW (UI ONLY) ===== */
@@ -2068,6 +2051,7 @@ document.addEventListener("click", (e) => {
   
 </body>
 </html>
+
 
 
 
