@@ -1681,6 +1681,7 @@ function formatItemName(name){
   //    (prosto: wszystko na lower, potem wielka litera na początku słowa)
   s = s.toLowerCase().replace(/\b([a-z])/g, (m) => m.toUpperCase());
 s = s.replace(/\bMl\b/g, "mL");
+  s = s.replace(/\bMm\b/g, "mm");
 
   
   // 2) popraw akronimy / materiały / metody - możesz dopisywać kolejne
@@ -2137,6 +2138,7 @@ document.addEventListener("click", (e) => {
   
 </body>
 </html>
+
 
 
 
