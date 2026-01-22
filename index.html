@@ -1671,22 +1671,44 @@ if (
 
     
 /* ===== FORMATOWANIE NAZW ITEMÓW (UI ONLY) ===== */
+
 function formatItemName(name){
   if (!name) return "";
 
-  return name
-    .toLowerCase()
-    .replace(/\bph\b/g, "pH")
-    .replace(/\bdna\b/g, "DNA")
-    .replace(/\brna\b/g, "RNA")
-    .replace(/\bcd\b/g, "CD")
+  let s = name.toString().trim();
 
-    // --- wymuszone nazwy własne / etykiety ---
-    .replace(/\bamina\b/g, "Amina")
-    .replace(/\bkuba\b/g, "Kuba")
-    .replace(/\bwojtek\b/g, "Wojtek")
-    .replace(/\bedit\b/g, "Edit");
+  // 1) najpierw zrób "normalny" wygląd: Title Case z CAPSLOCKA
+  //    (prosto: wszystko na lower, potem wielka litera na początku słowa)
+  s = s.toLowerCase().replace(/\b([a-z])/g, (m) => m.toUpperCase());
+s = s.replace(/\bMl\b/g, "mL");
+
+  
+  // 2) popraw akronimy / materiały / metody - możesz dopisywać kolejne
+  const ACRONYMS = [
+    "pH","DNA","RNA","CD",
+    "FTIR","TGA","GC","HPLC","SEM","EDS","XRF","UV","VIS","UV/VIS",
+    "PE","PP","PVC","PTFE","PES","MCE","HDPE","LDPE","PA","PMMA","PS","PEO",
+    "CHNS","NCS","LCMS","GPC","SEC"
+  ];
+
+  ACRONYMS.forEach(a => {
+    const re = new RegExp(`\\b${a.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\$&")}\\b`, "gi");
+    s = s.replace(re, a);
+  });
+
+  // 3) imiona / słowa specjalne (dla wpisów typu "AMINA", "KUBA", "WOJTEK", "EDIT")
+  const PROPER = {
+    "Amina": "Amina",
+    "Kuba": "Kuba",
+    "Wojtek": "Wojtek",
+    "Edit": "Edit"
+  };
+  if (PROPER[s]) return PROPER[s];
+
+  return s;
 }
+
+    
 
 async function loadImageWithCache(imgEl){
   const url = imgEl.dataset.src;
@@ -2115,6 +2137,7 @@ document.addEventListener("click", (e) => {
   
 </body>
 </html>
+
 
 
 
