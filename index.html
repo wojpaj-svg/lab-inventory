@@ -276,6 +276,18 @@ details.map-details summary::-webkit-details-marker{
 }
 
 
+/* warianty wyróżnienia */
+.loc-chip.secondary{
+  background: #e9f6ee;
+  color: #0b8a2e;
+  border: 1px solid #0b8a2e;
+}
+
+.loc-chip.anchor{
+  background: #0b8a2e;
+  color: #fff;
+  border: 1px solid #0b8a2e;
+}
 
 
 
@@ -1583,24 +1595,56 @@ function getGroupKey(locationCode){
   return "Other";
 }
 
-    function parseLocChips(loc){
-  const L = cleanLoc(loc);                 // np. MLWLGCLS5, MLIRDR6, SLUPCB5, MLILCB1S2
+   function parseLocChips(loc){
+  const L = cleanLoc(loc);
   if (!L) return [];
 
-  // LAB (pierwsze 2 litery)
-  const lab = L.slice(0,2);                // ML / SL / HH
+  const lab = L.slice(0,2);
 
-  // wykryj końcówkę S\d+ (półka)
   const shelfMatch = L.match(/S(\d+)$/i);
-  const shelfNum = shelfMatch ? shelfMatch[1] : "";   // "5" / "2" / ""
+  const shelfNum = shelfMatch ? shelfMatch[1] : "";
 
-   // GLASS CABINET (MLWL + GCL/GCR + S#) -> 4 chipy: ML | WL | GCL/GCR | S#
+  // ===== GLASS CABINET: ML | WL | (GCL/GCR = anchor) | S# =====
   if (L.startsWith("MLWLGCL") || L.startsWith("MLWLGCR")){
-    const side = L.includes("GCL") ? "GCL" : "GCR";  // left/right glass cabinet
-    const zone = "WL";                                // to jest ściana w main lab
-    const shelf = shelfNum ? `S${shelfNum}` : "";     // S1..S9
-    return [lab, zone, side, shelf].filter(Boolean);
+    const side = L.includes("GCL") ? "GCL" : "GCR";
+    const out = [
+      { text: lab,  anchor: false },
+      { text: "WL", anchor: false },
+      { text: side, anchor: true  },      // <-- KLUCZOWY
+    ];
+    if (shelfNum) out.push({ text: `S${shelfNum}`, anchor: false });
+    return out;
   }
+
+  // ===== STREFA =====
+  let zone = "WL";
+  if (L.startsWith("MLIR")) zone = "IR";
+  else if (L.startsWith("MLIL")) zone = "IL";
+  else if (L.startsWith("SLUP")) zone = "UP";
+  else if (L.startsWith("SLWL")) zone = "WL";
+  else if (L.startsWith("HHWL")) zone = "WL";
+
+  // ===== KONTENER (DR/CB + numer) =====
+  const m = L.match(/(DR\d+|CB\d+)/i);
+  const container = m ? m[0].toUpperCase() : "";
+
+  const out = [
+    { text: lab,  anchor: false },
+    { text: zone, anchor: false },
+  ];
+
+  if (container){
+    out.push({ text: container, anchor: true }); // <-- KLUCZOWY
+  }
+
+  // półka jako osobny chip tylko dla CB
+  if (shelfNum && container.startsWith("CB")){
+    out.push({ text: `S${shelfNum}`, anchor: false });
+  }
+
+  return out;
+}
+
 
 
   // STREFA (krótka, stała)
@@ -1850,7 +1894,11 @@ const codeEl = document.createElement("div");
 codeEl.className = "location-code";
 
 const locChips = parseLocChips(loc);
-codeEl.innerHTML = locChips.map(c => `<span class="loc-chip">${c}</span>`).join("");
+codeEl.innerHTML = locChips.map(c => {
+  const cls = c.anchor ? "loc-chip anchor" : "loc-chip secondary";
+  return `<span class="${cls}">${c.text}</span>`;
+}).join("");
+
 
 
 topbar.appendChild(left);
@@ -2020,6 +2068,7 @@ document.addEventListener("click", (e) => {
   
 </body>
 </html>
+
 
 
 
