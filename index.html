@@ -1679,8 +1679,13 @@ function formatItemName(name){
     .replace(/\bph\b/g, "pH")
     .replace(/\bdna\b/g, "DNA")
     .replace(/\brna\b/g, "RNA")
-    .replace(/\bcd\b/g, "CD");
-  
+    .replace(/\bcd\b/g, "CD")
+
+    // --- wymuszone nazwy własne / etykiety ---
+    .replace(/\bamina\b/g, "Amina")
+    .replace(/\bkuba\b/g, "Kuba")
+    .replace(/\bwojtek\b/g, "Wojtek")
+    .replace(/\bedit\b/g, "Edit");
 }
 
 async function loadImageWithCache(imgEl){
@@ -2110,6 +2115,7 @@ document.addEventListener("click", (e) => {
   
 </body>
 </html>
+
 
 
 
