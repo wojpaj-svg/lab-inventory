@@ -1679,6 +1679,10 @@ function formatItemName(name){
     .replace(/\bdna\b/g, "DNA")
     .replace(/\brna\b/g, "RNA")
     .replace(/\bcd\b/g, "CD");
+   .replace(/\bamina\b/g, "Amina");
+  .replace(/\bkuba\b/g, "Kuba");
+  .replace(/\bedit\b/g, "Edit");
+  .replace(/\bwojtek\b/g, "Wojtek");
 }
 
 async function loadImageWithCache(imgEl){
@@ -2108,6 +2112,7 @@ document.addEventListener("click", (e) => {
   
 </body>
 </html>
+
 
 
 
