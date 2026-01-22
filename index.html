@@ -1648,7 +1648,14 @@ function getGroupKey(locationCode){
 
   
 // półka jako osobny chip tylko dla CB (ma iść w nowej linii)
-if (shelfNum && container.startsWith("CB")){
+if (
+  shelfNum &&
+  (
+    container.startsWith("CB") ||
+    container === "GCR" ||
+    container === "GCL"
+  )
+){
   out.push({ text: `S${shelfNum}`, anchor: false, shelf: true });
 }
 
@@ -2101,6 +2108,7 @@ document.addEventListener("click", (e) => {
   
 </body>
 </html>
+
 
 
 
