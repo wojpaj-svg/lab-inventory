@@ -1448,7 +1448,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ];
 
- 
+ // ===== BUILD SEARCH INDEX (name + location + synonyms) =====
+function buildSearchBlob(item){
+  const name = normalize(item.name);
+  const loc  = normalize(item.location);
+
+  const tokens = new Set(
+    (name + " " + loc).split(/[^a-z0-9µ/+-]+/).filter(Boolean)
+  );
+
+  if (name.includes("tweezers")) {
+    tokens.add("forceps");
+    tokens.add("forcepts");
+    tokens.add("pincers");
+  }
+
+  if (name.match(/\bpp\b/)) {
+    tokens.add("polypropylene");
+    tokens.add("polipropylen");
+  }
+  if (name.match(/\bpe\b/)) {
+    tokens.add("polyethylene");
+    tokens.add("polietylen");
+  }
+  if (name.match(/\bhdpe\b/)) {
+    tokens.add("high-density polyethylene");
+    tokens.add("high density polyethylene");
+  }
+  if (name.match(/\bldpe\b/)) {
+    tokens.add("low-density polyethylene");
+    tokens.add("low density polyethylene");
+  }
+
+  return Array.from(tokens).join(" ");
+}
+
+// dopnij do itemów
+data.forEach(item => {
+  item._searchBlob = buildSearchBlob(item);
+});
+
 
     const searchInput = document.getElementById("search");
     const resultsDiv  = document.getElementById("results");
@@ -1460,7 +1499,60 @@ document.addEventListener("DOMContentLoaded", () => {
       function normalize(text) {
       return text ? text.toString().toLowerCase().trim() : "";
     }
+// ===== SYNONYMS / ALIASES =====
+// klucz = jak użytkownik może wpisać
+// value = docelowy "kanoniczny" token/nazwa, pod którą to ma znaleźć rzeczy
+const SYNONYMS = {
+  // Tweezers / forceps (u Ciebie to są TWEEZERS)
+  "forceps": "tweezers",
+  "forcepts": "tweezers",   // literówka userów
+  "pincers": "tweezers",
+  "tweezer": "tweezers",
 
+  // Polymers / abbreviations (Twoje dane mają PE/PP/HDPE/LDPE itp.)
+  "polypropylene": "pp",
+  "polipropylen": "pp",
+  "polipropylene": "pp",
+
+  "polyethylene": "pe",
+  "polietylen": "pe",
+  "polietilen": "pe",
+
+  "high density polyethylene": "hdpe",
+  "high-density polyethylene": "hdpe",
+  "polietylen wysokiej gestosci": "hdpe",
+  "polietylen wysokiej gęstości": "hdpe",
+
+  "low density polyethylene": "ldpe",
+  "low-density polyethylene": "ldpe",
+
+  // Glassware terms (przykłady sensowne dla Twojej listy)
+  "measuring cylinder": "graduated cylinder",
+  "measuring cylinders": "graduated cylinder",
+
+  "ziplock": "zip lock",
+  "zip-lock": "zip lock",
+
+  // Brits/US
+  "aluminium": "aluminum",
+};
+
+// co pokazujemy w dropdownie: "query → canonical"
+const SYNONYM_LABELS = [
+  { q: "forceps", show: "forceps → tweezers" },
+  { q: "forcepts", show: "forcepts → tweezers" },
+  { q: "polypropylene", show: "polypropylene → PP" },
+  { q: "polipropylen", show: "polipropylen → PP" },
+  { q: "polyethylene", show: "polyethylene → PE" },
+  { q: "polietylen", show: "polietylen → PE" },
+  { q: "high-density polyethylene", show: "high-density polyethylene → HDPE" },
+  { q: "low-density polyethylene", show: "low-density polyethylene → LDPE" },
+];
+
+
+
+
+    
 // --- indeks słów do sugestii (zbudowany raz) ---
 const WORD_FREQ = (() => {
   const freq = new Map();
@@ -1484,8 +1576,23 @@ function getSuggestions(q){
   for (const [w, c] of WORD_FREQ.entries()){
     if (w.startsWith(s)) out.push([w, c]);
   }
-  out.sort((a,b) => b[1] - a[1]); // najczęstsze pierwsze
-  return out.slice(0, 5).map(x => x[0]);
+
+out.sort((a,b) => b[1] - a[1]);
+let words = out.slice(0, 5).map(x => x[0]);
+
+// dorzuć synonimy, jeśli pasują do wpisu
+const s2 = normalize(q);
+SYNONYM_LABELS.forEach(obj => {
+  if (obj.q.startsWith(s2) && !words.includes(obj.q)) words.unshift(obj.q);
+});
+
+// limit
+words = words.slice(0, 5);
+return words;
+
+
+
+  
 }
 
 function renderSuggestions(){
@@ -1498,9 +1605,12 @@ function renderSuggestions(){
     return;
   }
 
-  suggestionsDiv.innerHTML = sugg.map(w =>
-    `<div class="sugg-item" data-word="${w}">${w}</div>`
-  ).join("");
+  suggestionsDiv.innerHTML = sugg.map(w => {
+  const labelObj = SYNONYM_LABELS.find(x => x.q === w);
+  const label = labelObj ? labelObj.show : w;
+  return `<div class="sugg-item" data-word="${w}">${label}</div>`;
+}).join("");
+
 
   suggestionsDiv.style.display = "block";
 
@@ -1915,10 +2025,13 @@ function getMapForLocation(loc){
 
 
 
-      let matches = data.filter(item =>
-  normalize(item.name).includes(q) ||
-  normalize(item.location).includes(q)
+ // jeśli user wpisał synonim, zmapuj go na canonical (np. forceps -> tweezers)
+const mapped = SYNONYMS[q] ? SYNONYMS[q] : q;
+
+let matches = data.filter(item =>
+  item._searchBlob.includes(mapped) || item._searchBlob.includes(q)
 );
+
 
 
 // jeśli wybrany chip (grupa), przefiltruj
@@ -2138,6 +2251,7 @@ document.addEventListener("click", (e) => {
   
 </body>
 </html>
+
 
 
 
