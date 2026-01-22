@@ -1758,8 +1758,8 @@ function renderChips(matches) {
 
 
 function getMapForLocation(loc){
-  const L = cleanLoc(loc);        // np. "MLWLGCRS2", "MLIRCB1S1", "SLUPCB3"
-  const base = getBaseLoc(L);     // usuwa końcówkę S1/S2/S10 -> np. "MLIRCB1"
+  const L = cleanLoc(loc);        // np. "MLWLDR11", "MLIRCB1S2"
+  const base = getBaseLoc(L);     // usuwa S1/S2/S10 -> np. "MLIRCB1"
 
   // ===== GLASS CABINETS (main lab wall) =====
   if (L.startsWith("MLWLGCR")) return "assets/maps/GCR.jpg"; // right
@@ -1772,10 +1772,10 @@ function getMapForLocation(loc){
     if (!isNaN(n) && n >= 1 && n <= 9)   return "assets/maps/IRA.jpg";
     if (!isNaN(n) && n >= 10 && n <= 18) return "assets/maps/IRD.jpg";
   }
-  // cabinets (shelf ignored via base)
+  // cabinets
   if (base === "MLIRCB1") return "assets/maps/IRB.jpg";
   if (base === "MLIRCB2") return "assets/maps/IRC.jpg";
-  if (base === "MLIRCB3") return "assets/maps/IRD.jpg";
+  if (base === "MLIRCB3") return "assets/maps/IRE.jpg";   // <-- było źle u Ciebie
 
   // ===== MAIN LAB – ISLAND LEFT =====
   if (L.startsWith("MLILDR")) {
@@ -1787,19 +1787,66 @@ function getMapForLocation(loc){
   if (base === "MLILCB2") return "assets/maps/ILC.jpg";
   if (base === "MLILCB3") return "assets/maps/ILB.jpg";
 
-  // ===== MAIN LAB – WALL (fallback) =====
-  if (L.startsWith("MLWL")) return "assets/maps/MLA.jpg";
-  if (L.startsWith("MDL"))  return "assets/maps/MLA.jpg";
+  // ===== MAIN LAB – WALL (MLWL...) =====
+  if (L.startsWith("MLWLCB")) {
+    // z tabeli: MLWLCB1S1/2 -> MLB
+    if (base === "MLWLCB1") return "assets/maps/MLB.jpg";
+  }
+
+  if (L.startsWith("MLWLDR")) {
+    const n = parseInt(L.replace("MLWLDR",""), 10);
+    if (!isNaN(n)) {
+      if (n >= 1  && n <= 6)  return "assets/maps/MLA.jpg";
+      if (n >= 7  && n <= 10) return "assets/maps/MLC.jpg";
+      if (n >= 11 && n <= 13) return "assets/maps/MLD.jpg"; // <-- tu jest Twój case DR11
+      if (n >= 14 && n <= 16) return "assets/maps/MLE.jpg";
+      if (n >= 17 && n <= 19) return "assets/maps/MLF.jpg";
+      if (n >= 20 && n <= 21) return "assets/maps/MLG.jpg";
+      if (n >= 22 && n <= 23) return "assets/maps/MLH.jpg";
+      if (n >= 24 && n <= 25) return "assets/maps/MLI.jpg";
+      if (n >= 26 && n <= 28) return "assets/maps/MLJ.jpg";
+    }
+  }
 
   // ===== SMALL LAB =====
-  if (L.startsWith("SLUP")) return "assets/maps/SLUCA.jpg"; // upper
-  if (L.startsWith("SLWL")) return "assets/maps/SLA.jpg";   // wall
+  // upper cabinets
+  if (L.startsWith("SLUPCB")) {
+    const n = parseInt(L.replace("SLUPCB",""), 10);
+    if (!isNaN(n) && (n === 1 || n === 2)) return "assets/maps/SLUCA.jpg";
+    if (!isNaN(n) && (n === 3 || n === 4 || n === 5)) return "assets/maps/SLUCB.jpg";
+  }
+
+  // wall cabinets
+  if (L.startsWith("SLWLCB")) {
+    if (base === "SLWLCB1") return "assets/maps/SLA.jpg";
+    if (base === "SLWLCB2") return "assets/maps/SLA.jpg";
+    if (base === "SLWLCB3") return "assets/maps/SLB.jpg";
+    if (base === "SLWLCB4") return "assets/maps/SLD.jpg";
+    if (base === "SLWLCB5") return "assets/maps/SLE.jpg";
+  }
+
+  // wall drawers
+  if (L.startsWith("SLWLDR")) {
+    const n = parseInt(L.replace("SLWLDR",""), 10);
+    if (!isNaN(n) && n >= 1 && n <= 9) return "assets/maps/SLC.jpg";
+  }
 
   // ===== HUMAN HEALTH =====
-  if (L.startsWith("HHWL")) return "assets/maps/HHC.jpg";   // fallback
+  if (L.startsWith("HHWLCB")) {
+    if (base === "HHWLCB3") return "assets/maps/HHA.jpg";
+    if (base === "HHWLCB1") return "assets/maps/HHD.jpg";
+    if (base === "HHWLCB2") return "assets/maps/HHD.jpg";
+  }
+
+  if (L.startsWith("HHWLDR")) {
+    const n = parseInt(L.replace("HHWLDR",""), 10);
+    if (!isNaN(n) && n >= 1 && n <= 7)  return "assets/maps/HHC.jpg";
+    if (!isNaN(n) && n >= 8 && n <= 14) return "assets/maps/HHB.jpg";
+  }
 
   return "";
 }
+
 
 
 
@@ -2051,6 +2098,7 @@ document.addEventListener("click", (e) => {
   
 </body>
 </html>
+
 
 
 
